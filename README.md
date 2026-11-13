@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DP Systems — Revista 3D interativa
 
-## Getting Started
+Portfólio da DP Systems no formato de uma revista 3D: capa, editorial, três spreads de produto (DP Printer, EstoqueNTO, Credencial Studio) e contracapa com contato.
 
-First, run the development server:
+## Rodar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra http://localhost:3000. Para conferir o build de produção: `npm run build`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Onde mexer
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| O quê | Arquivo |
+| --- | --- |
+| Textos, links, integrações e dados da empresa | `src/content/site.ts` |
+| Desenho de cada página da revista | `src/faces/*.ts` |
+| Virada de página (ossos e curvatura) | `src/components/canvas/Sheet.tsx` |
+| Armazém 3D e crachá holográfico | `src/components/canvas/Warehouse.tsx`, `Badge.tsx` |
+| Câmera, luzes e zoom | `src/components/canvas/Scene.tsx` |
+| Barra de navegação | `src/components/ui/Hud.tsx` |
+| Versão em texto (SEO e acessibilidade) | `src/components/ui/ReadingMode.tsx` |
 
-## Learn More
+## Como funciona
 
-To learn more about Next.js, take a look at the following resources:
+- Cada folha é uma `SkinnedMesh` com 30 ossos, que curva ao virar.
+- O conteúdo das páginas é desenhado em canvas 2D e aplicado como textura, então dobra junto com o papel.
+- Os cliques chegam por raycast: a coordenada UV do ponto tocado vira uma posição na página (`src/lib/surface.ts`).
+- O armazém e o crachá são objetos 3D reais que flutuam à frente da página aberta.
+- A versão em texto usa o mesmo conteúdo e fica sempre no HTML.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Controles
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Setas, roda do mouse, arrasto lateral ou a barra inferior viram as páginas. `Z` ou duplo clique liga o zoom.
 
-## Deploy on Vercel
+## Publicar
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O projeto é um Next.js padrão: importe o repositório na Vercel ou rode `npx vercel` na pasta.

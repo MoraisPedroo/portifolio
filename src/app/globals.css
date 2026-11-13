@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #090a0f;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #090a0f;
+  color: #e2e8f0;
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Palco da revista: dark matte com um halo esmeralda sob a lombada. */
+.stage {
+  background:
+    radial-gradient(ellipse 55% 45% at 50% 52%, rgba(16, 185, 129, 0.07), transparent 70%),
+    radial-gradient(ellipse 80% 70% at 50% 50%, #12131a 0%, #090a0f 75%);
+}
+
+.stage canvas {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
 }
