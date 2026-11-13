@@ -11,10 +11,10 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="sobre" aria-labelledby="sobre-title" className="bg-paper py-24 md:py-32">
+    <section id="sobre" aria-labelledby="sobre-title" className="bg-paper pt-10 pb-24 md:pt-14 md:pb-32">
       <div className="mx-auto grid max-w-[1240px] gap-14 px-5 md:px-8 lg:grid-cols-[1.1fr_0.9fr]">
         <div>
-          <h2 id="sobre-title" className="display-tight text-[clamp(2.1rem,4.4vw,3.6rem)]">
+          <h2 id="sobre-title" className="display-tight text-[clamp(1.9rem,min(4.4vw,7.5vh),3.6rem)]">
             {company.mission}
           </h2>
           <p className="mt-5 text-xl font-medium text-dp-deep">{company.missionSub}</p>

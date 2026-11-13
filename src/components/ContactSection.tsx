@@ -10,8 +10,8 @@ export function ContactSection() {
 
   return (
     <footer id="contato" className="bg-ink text-white">
-      <div className="mx-auto max-w-[1240px] px-5 pb-12 pt-24 md:px-8 md:pt-32">
-        <h2 className="display max-w-4xl text-[clamp(2.4rem,5.6vw,4.6rem)]">{contact.title}</h2>
+      <div className="mx-auto max-w-[1240px] px-5 pb-12 pt-16 md:px-8 md:pt-24">
+        <h2 className="display max-w-4xl text-[clamp(2.2rem,min(5.6vw,9vh),4.6rem)]">{contact.title}</h2>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-fog">{contact.copy}</p>
         <a
           href={company.whatsapp}

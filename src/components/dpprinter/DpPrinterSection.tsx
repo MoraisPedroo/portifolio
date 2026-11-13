@@ -5,7 +5,7 @@ import { PrintSimulator } from "./PrintSimulator";
 
 export function DpPrinterSection({ photo }: { photo?: { src: string; alt: string } }) {
   return (
-    <section id="dpprinter" aria-labelledby="dpprinter-title" className="bg-ink py-24 text-white md:py-32">
+    <section id="dpprinter" aria-labelledby="dpprinter-title" className="bg-ink text-white pt-10 pb-24 md:pt-14 md:pb-32">
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <span className="size-3 rounded-sm bg-dp" />
@@ -13,9 +13,9 @@ export function DpPrinterSection({ photo }: { photo?: { src: string; alt: string
           <span className="rounded-full border border-rule-dark px-3 py-1 text-sm text-fog">{dpprinter.version}</span>
         </div>
 
-        <div className="mt-8 grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16 [&>*]:min-w-0">
+        <div className="mt-6 grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16 [&>*]:min-w-0">
           <div>
-            <h2 id="dpprinter-title" className="display-tight text-[clamp(2.1rem,4.4vw,3.6rem)]">
+            <h2 id="dpprinter-title" className="display-tight text-[clamp(1.9rem,min(4.4vw,7.5vh),3.6rem)]">
               {dpprinter.title}
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-fog">{dpprinter.copy}</p>

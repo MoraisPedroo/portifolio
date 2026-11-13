@@ -4,20 +4,20 @@ import { BadgeStudio } from "./BadgeStudio";
 
 export function CredencialSection({ photo }: { photo?: { src: string; alt: string } }) {
   return (
-    <section id="credencial" aria-labelledby="credencial-title" className="bg-ink py-24 text-white md:py-32">
+    <section id="credencial" aria-labelledby="credencial-title" className="bg-ink text-white pt-10 pb-24 md:pt-14 md:pb-32">
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="flex items-center gap-3">
           <span className="size-3 rounded-sm bg-cred" />
           <span className="text-lg font-bold">{credencial.name}</span>
         </div>
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <h2 id="credencial-title" className="display-tight text-[clamp(2.1rem,4.4vw,3.6rem)]">
+        <div className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <h2 id="credencial-title" className="display-tight text-[clamp(1.9rem,min(4.4vw,7.5vh),3.6rem)]">
             {credencial.title}
           </h2>
           <p className="max-w-xl text-lg leading-relaxed text-fog">{credencial.copy}</p>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-10">
           <BadgeStudio />
         </div>
 

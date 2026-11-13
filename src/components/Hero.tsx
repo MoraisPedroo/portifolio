@@ -7,7 +7,7 @@ export function Hero() {
       <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-5 md:px-8 lg:grid-cols-[1.12fr_0.88fr]">
         <div>
           <p className="mb-6 text-[15px] font-medium text-slate">DP Systems, engenharia de software em São Paulo</p>
-          <h1 className="display text-[clamp(2.7rem,6.4vw,5.4rem)] text-ink">{company.headline}</h1>
+          <h1 className="display text-[clamp(2.5rem,min(6.4vw,10vh),5.4rem)] text-ink">{company.headline}</h1>
           <p className="mt-7 max-w-[34rem] text-lg leading-relaxed text-slate md:text-xl">{company.intro}</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a
