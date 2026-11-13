@@ -1,31 +1,72 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, monospace;
+/*
+  Sistema de cores
+  Faixas claras (paper) e escuras (ink) se alternam; cada produto tem um acento.
+  Texto de acento sobre fundo claro usa a variante "-deep" para passar no contraste AA.
+*/
+@theme {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --color-ink: #0e1116;
+  --color-graphite: #171c24;
+  --color-graphite-2: #1f2530;
+  --color-rule-dark: #2a313d;
+  --color-fog: #a3adbb;
+
+  --color-paper: #f3f5f7;
+  --color-stock: #ffffff;
+  --color-rule: #dde2e8;
+  --color-slate: #4a5463;
+
+  --color-dp: #10b981;
+  --color-dp-deep: #047857;
+  --color-nto: #f26a1b;
+  --color-nto-deep: #c2410c;
+  --color-cred: #9b7bff;
+  --color-cred-deep: #6d28d9;
+  --color-signal: #f5a524;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
-  background: #090a0f;
-  color-scheme: dark;
+  background: var(--color-ink);
+  color-scheme: light;
+  scroll-padding-top: 5rem;
 }
 
 body {
   margin: 0;
-  background: #090a0f;
-  color: #e2e8f0;
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Palco da revista: dark matte com um halo esmeralda sob a lombada. */
-.stage {
-  background:
-    radial-gradient(ellipse 55% 45% at 50% 52%, rgba(16, 185, 129, 0.07), transparent 70%),
-    radial-gradient(ellipse 80% 70% at 50% 50%, #12131a 0%, #090a0f 75%);
+/* Títulos expandidos: a assinatura tipográfica do site. */
+.display {
+  font-stretch: 125%;
+  font-weight: 760;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  text-wrap: balance;
 }
 
-.stage canvas {
-  outline: none;
+.display-tight {
+  font-stretch: 112%;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 button {
@@ -37,6 +78,71 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: 2px solid #10b981;
-  outline-offset: 2px;
+  outline: 2px solid var(--color-dp);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Etiqueta saindo da impressora térmica (abertura). */
+@keyframes label-feed {
+  0% {
+    transform: translateY(-101%);
+    opacity: 1;
+  }
+  18%,
+  86% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0.6deg);
+    opacity: 0;
+  }
+}
+
+/* Só anima quando o sistema permite movimento; senão a etiqueta fica parada e visível. */
+@media (prefers-reduced-motion: no-preference) {
+  .label-feed {
+    animation: label-feed 5200ms var(--ease-out-quint) both;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(16 185 129 / 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgb(16 185 129 / 0);
+  }
+}
+
+@keyframes travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

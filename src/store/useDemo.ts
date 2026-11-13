@@ -44,9 +44,7 @@ type DemoState = {
   access: number;
   finish: number;
   flipped: boolean;
-  focus: "name" | "role" | null;
   setField: (key: "name" | "role", value: string) => void;
-  setFocus: (focus: "name" | "role" | null) => void;
   setAccess: (access: number) => void;
   setFinish: (finish: number) => void;
   flip: () => void;
@@ -149,10 +147,8 @@ export const useDemo = create<DemoState>((set, get) => ({
   access: 0,
   finish: 0,
   flipped: false,
-  focus: null,
   setField: (key, value) =>
     set({ [key]: value.slice(0, key === "name" ? 22 : 28) } as Pick<DemoState, typeof key>),
-  setFocus: (focus) => set({ focus }),
   setAccess: (access) => set({ access }),
   setFinish: (finish) => set({ finish }),
   flip: () => set({ flipped: !get().flipped }),

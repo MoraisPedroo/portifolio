@@ -1,6 +1,6 @@
-# DP Systems — Revista 3D interativa
+# DP Systems — site institucional
 
-Portfólio da DP Systems no formato de uma revista 3D: capa, editorial, três spreads de produto (DP Printer, EstoqueNTO, Credencial Studio) e contracapa com contato.
+Site de uma página, em rolagem contínua, que apresenta a DP Systems e seus três produtos: DP Printer, EstoqueNTO e Credencial Studio. Dois momentos são 3D e interativos: o armazém do EstoqueNTO e o crachá holográfico do Credencial Studio.
 
 ## Rodar
 
@@ -16,25 +16,38 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 | O quê | Arquivo |
 | --- | --- |
 | Textos, links, integrações e dados da empresa | `src/content/site.ts` |
-| Desenho de cada página da revista | `src/faces/*.ts` |
-| Virada de página (ossos e curvatura) | `src/components/canvas/Sheet.tsx` |
-| Armazém 3D e crachá holográfico | `src/components/canvas/Warehouse.tsx`, `Badge.tsx` |
-| Câmera, luzes e zoom | `src/components/canvas/Scene.tsx` |
-| Barra de navegação | `src/components/ui/Hud.tsx` |
-| Versão em texto (SEO e acessibilidade) | `src/components/ui/ReadingMode.tsx` |
+| Cores e tipografia | `src/app/globals.css` (bloco `@theme`) e `src/lib/fonts.ts` |
+| Abertura com a impressora de etiquetas | `src/components/Hero.tsx`, `LabelPrinter.tsx` |
+| DP Printer (simulador e diagrama) | `src/components/dpprinter/` |
+| EstoqueNTO (armazém e integrações) | `src/components/estoquento/`, `src/three/WarehouseScene.tsx` |
+| Credencial Studio (editor e crachá) | `src/components/credencial/`, `src/three/BadgeScene.tsx`, `src/three/badgeFaces.ts` |
+| Estado das demonstrações | `src/store/useDemo.ts` |
+| Fotos dos produtos | `public/images/` |
 
 ## Como funciona
 
-- Cada folha é uma `SkinnedMesh` com 30 ossos, que curva ao virar.
-- O conteúdo das páginas é desenhado em canvas 2D e aplicado como textura, então dobra junto com o papel.
-- Os cliques chegam por raycast: a coordenada UV do ponto tocado vira uma posição na página (`src/lib/surface.ts`).
-- O armazém e o crachá são objetos 3D reais que flutuam à frente da página aberta.
-- A versão em texto usa o mesmo conteúdo e fica sempre no HTML.
+- Todo texto é HTML de verdade: legível no celular, indexável e acessível.
+- Um único canvas WebGL fixo (`src/three/SharedCanvas.tsx`) desenha os dois palcos 3D com o `<View>` do drei; cada palco é um elemento comum da página e só é renderizado quando está na tela.
+- O crachá usa um shader próprio (película fina, Fresnel e flocos metálicos) sobre uma textura desenhada em canvas 2D, que atualiza enquanto a pessoa digita.
+- Se o FPS cair, o `PerformanceMonitor` reduz a resolução do canvas.
+- Com "reduzir movimento" ativo no sistema, as animações param e o conteúdo continua visível.
 
-## Controles
+## Paleta
 
-Setas, roda do mouse, arrasto lateral ou a barra inferior viram as páginas. `Z` ou duplo clique liga o zoom.
+| Token | Cor | Uso |
+| --- | --- | --- |
+| `ink` | `#0E1116` | Faixas escuras e palcos 3D |
+| `paper` | `#F3F5F7` | Faixas claras |
+| `dp` | `#10B981` | DP Printer e marca |
+| `nto` | `#F26A1B` | EstoqueNTO |
+| `cred` | `#9B7BFF` | Credencial Studio |
+
+Texto de acento sobre fundo claro usa as variantes `-deep` para manter contraste AA.
+
+## Skills do Claude Code
+
+Em `.claude/skills/` estão as skills usadas no projeto: `frontend-design` (Anthropic), `web-design-guidelines` e `react-best-practices` (Vercel) e `threejs-react-three-fiber` (CloudAI-X).
 
 ## Publicar
 
-O projeto é um Next.js padrão: importe o repositório na Vercel ou rode `npx vercel` na pasta.
+O projeto é publicado na Vercel a partir da branch `main` do GitHub: cada push gera um novo deploy.

@@ -1,13 +1,16 @@
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Archivo, JetBrains_Mono } from "next/font/google";
 
-export const displayFont = Plus_Jakarta_Sans({
+/** Archivo tem eixo de largura: títulos expandidos lembram etiqueta e sinalização industrial. */
+export const sansFont = Archivo({
   subsets: ["latin"],
-  variable: "--font-display",
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
+/** Só para dados reais: JSON, latências, códigos e CNPJ. */
 export const monoFont = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
