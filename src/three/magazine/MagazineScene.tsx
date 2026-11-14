@@ -41,7 +41,7 @@ export function MagazineScene() {
     if (shown === page) return;
     const timer = setTimeout(
       () => setShown((current) => current + Math.sign(page - current)),
-      Math.abs(page - shown) > 1 ? 140 : 0,
+      Math.abs(page - shown) > 1 ? 260 : 0,
     );
     return () => clearTimeout(timer);
   }, [page, shown]);
@@ -73,7 +73,7 @@ export function MagazineScene() {
     // Fechada, a revista fica centralizada na capa ou na contracapa.
     const x = shown === 0 ? -PAGE_WIDTH / 2 : shown === MAG_LAST ? PAGE_WIDTH / 2 : 0;
     easing.damp(root.current.position, "x", x, 0.35, delta);
-    easing.dampE(root.current.rotation, [-0.12 - state.pointer.y * 0.05, state.pointer.x * 0.1, 0], 0.4, delta);
+    easing.dampE(root.current.rotation, [-0.22 - state.pointer.y * 0.05, -0.08 + state.pointer.x * 0.1, 0], 0.5, delta);
   });
 
   const flip = () => useMagazine.getState().next();

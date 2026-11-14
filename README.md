@@ -21,7 +21,8 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 | Páginas da revista | `src/three/magazine/pages.ts` |
 | Altura de tela e espaçamentos das seções | `src/components/Section.tsx` |
 | DP Printer (simulador e diagrama) | `src/components/dpprinter/` |
-| EstoqueNTO (armazém e integrações) | `src/components/estoquento/`, `src/three/WarehouseScene.tsx` |
+| EstoqueNTO (integrações) | `src/components/estoquento/` |
+| Sala 3D do EstoqueNTO (demonstração, sem login) | `public/sala3d/` (`demo.js`, `data.js`) |
 | Credencial Studio (editor e crachá) | `src/components/credencial/`, `src/three/BadgeScene.tsx`, `src/three/badgeFaces.ts` |
 | Estado das demonstrações | `src/store/useDemo.ts` |
 | Logo, fotos e ícone | `public/images/`, `src/app/icon.png` |
@@ -29,7 +30,9 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 ## Como funciona
 
 - Todo texto é HTML de verdade: legível no celular, indexável e acessível.
-- Um único canvas WebGL fixo (`src/three/SharedCanvas.tsx`) desenha os três palcos 3D com o `<View>` do drei; cada palco é um elemento comum da página e só é renderizado quando está na tela.
+- Um canvas WebGL fixo (`src/three/SharedCanvas.tsx`) desenha a revista e o crachá com o `<View>` do drei; cada palco é um elemento comum da página e só é renderizado quando está na tela.
+- A sala 3D do EstoqueNTO vem do repositório do EstoqueNTO (`sala3d`), em modo demonstração: sem Firebase, sem login e só com códigos ilustrativos. Ela roda num iframe e pausa quando sai da tela.
+- A revista abre 5 s depois de aparecer e vira uma página a cada 10 s (`src/components/HeroMagazine.tsx`).
 - O crachá usa um shader próprio (película fina, Fresnel e flocos metálicos) sobre uma textura desenhada em canvas 2D, que atualiza enquanto a pessoa digita.
 - Se o FPS cair, o `PerformanceMonitor` reduz a resolução do canvas.
 - Com "reduzir movimento" ativo no sistema, as animações param e o conteúdo continua visível.

@@ -1,7 +1,7 @@
 import { estoquento } from "@/content/site";
 import { Brand, H2, INNER, LEAD, PAGE } from "../Section";
 import { ApiHub } from "./ApiHub";
-import { WarehousePanel } from "./WarehousePanel";
+import { WarehouseRoom } from "./WarehouseRoom";
 
 export function EstoqueSection() {
   return (
@@ -28,7 +28,7 @@ export function EstoqueSection() {
           </h2>
           <p className={`${LEAD} mt-[clamp(0.5rem,1.6vh,1rem)] max-w-2xl text-slate`}>{estoquento.copy}</p>
           <div className="mt-[clamp(0.75rem,2.4vh,1.5rem)] flex min-h-0 flex-1 flex-col">
-            <WarehousePanel />
+            <WarehouseRoom />
           </div>
         </div>
         <ApiHub />

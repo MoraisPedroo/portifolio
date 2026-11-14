@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Sala 3D · EstoqueNTO · demonstração</title>
+  <link rel="stylesheet" href="./demo.css?v=1">
+</head>
+<body>
+  <main class="stage">
+    <div id="viewport" class="viewport" aria-label="Sala de estoque em 3D. Arraste para girar e clique numa caixa para selecionar."></div>
+    <p class="loading" id="loading">Montando a sala…</p>
+
+    <div class="top">
+      <div class="views" role="group" aria-label="Ângulo da câmera">
+        <button data-view="iso" class="active" aria-pressed="true">Sala</button>
+        <button data-view="top" aria-pressed="false">Planta</button>
+        <button data-view="front" aria-pressed="false">Estantes</button>
+      </div>
+      <span class="hint">Arraste para girar · clique numa caixa</span>
+    </div>
+
+    <div class="progress" id="progress" hidden>
+      <div class="progress-head"><strong id="phase">Caminhando até a prateleira</strong><span id="percent">0%</span></div>
+      <div class="bar"><i id="bar"></i></div>
+    </div>
+
+    <div class="bottom">
+      <div class="selected">
+        <span>Caixa selecionada</span>
+        <strong id="selected">—</strong>
+      </div>
+      <button class="ship" id="ship" disabled>Simular envio</button>
+    </div>
+
+    <p class="error" id="error" hidden>Não foi possível abrir a sala 3D neste navegador.</p>
+  </main>
+  <script type="module" src="./demo.js?v=1"></script>
+</body>
+</html>

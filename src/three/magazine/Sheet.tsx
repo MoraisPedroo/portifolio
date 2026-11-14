@@ -5,6 +5,7 @@ import { easing } from "maath";
 import { useEffect, useMemo, useRef } from "react";
 import {
   Bone,
+  Color,
   BoxGeometry,
   Float32BufferAttribute,
   Group,
@@ -29,7 +30,9 @@ const STACK_GAP = 0.0045;
 const LIFT = 0.3;
 const CURVE_BONES = 9;
 const EDGE_REST = 0.03;
-const TURN_CURVE = 0.09;
+const TURN_CURVE = 0.16;
+/** Duração da curvatura da folha durante a virada (ms). */
+const TURN_MS = 1400;
 
 // Geometria única, compartilhada por todas as folhas: cada vértice é ligado
 // a dois ossos vizinhos para a folha curvar sem vincos.
@@ -52,7 +55,9 @@ const geometry = (() => {
   return box;
 })();
 
-const edgeMaterial = new MeshStandardMaterial({ color: "#E2E8F0", roughness: 0.8 });
+const edgeMaterial = new MeshStandardMaterial({ color: "#E9E6DF", roughness: 0.85 });
+const WHITE = new Color("#ffffff");
+const SHADE = new Color();
 
 function faceMaterial(surface: PageSurface, cover: boolean) {
   return new MeshStandardMaterial({
@@ -126,7 +131,8 @@ export function Sheet({ index, page, last, front, back, onFlip }: Props) {
       turnedAt.current = now;
       lastOpened.current = opened;
     }
-    const turn = Math.sin((Math.min(400, now - turnedAt.current) / 400) * Math.PI);
+    const t = Math.min(1, (now - turnedAt.current) / TURN_MS);
+    const turn = Math.sin(t * Math.PI);
     const dir = opened ? -1 : 1;
     const target = (dir * Math.PI) / 2;
     const bones = sheet.skeleton.bones;
@@ -141,11 +147,20 @@ export function Sheet({ index, page, last, front, back, onFlip }: Props) {
           i === 0 ? dir * (Math.PI / 2 - LIFT) : i <= CURVE_BONES ? (dir * (LIFT - EDGE_REST)) / CURVE_BONES : 0;
         rotation = rest + TURN_CURVE * Math.sin((i * Math.PI) / bones.length) * turn * target;
       }
-      easing.dampAngle(node.rotation, "y", rotation, 0.5, delta);
-      const fold = i > 8 && !closed ? Math.sin((i * Math.PI) / bones.length - 0.5) * turn * dir * 0.035 : 0;
-      easing.dampAngle(node.rotation, "x", fold, 0.3, delta);
+      easing.dampAngle(node.rotation, "y", rotation, i === 0 ? 0.75 : 0.45, delta);
+      const fold = i > 8 && !closed ? Math.sin((i * Math.PI) / bones.length - 0.5) * turn * dir * 0.06 : 0;
+      easing.dampAngle(node.rotation, "x", fold, 0.35, delta);
     }
     sheet.position.z = (page - index) * STACK_GAP;
+
+    // Enquanto a folha está de pé, ela escurece como se saísse da luz.
+    const upright = 1 - Math.min(1, Math.abs(group.current.rotation.y) / (Math.PI / 2 - LIFT));
+    const materials = sheet.material as MeshStandardMaterial[];
+    SHADE.copy(WHITE).multiplyScalar(1 - upright * 0.45);
+    for (const face of [materials[4], materials[5]]) {
+      face.color.copy(SHADE);
+      face.emissiveIntensity = 0.32 * (1 - upright * 0.7);
+    }
   });
 
   return (

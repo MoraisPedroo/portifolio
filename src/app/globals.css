@@ -102,6 +102,19 @@ button:disabled {
   border-radius: 6px;
 }
 
+/* Barra de tempo até a próxima página da revista. */
+@keyframes magazine-timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.magazine-timer {
+  animation: magazine-timer linear both;
+}
+
 @keyframes pulse-ring {
   0% {
     box-shadow: 0 0 0 0 rgb(16 185 129 / 0.45);
