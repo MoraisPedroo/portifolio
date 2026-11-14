@@ -13,19 +13,9 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <DpPrinterSection
-          photo={{
-            src: "/images/dp-printer.webp",
-            alt: "Impressora térmica preta imprimindo uma etiqueta branca com código de barras (imagem ilustrativa)",
-          }}
-        />
+        <DpPrinterSection />
         <EstoqueSection />
-        <CredencialSection
-          photo={{
-            src: "/images/credencial-printer.webp",
-            alt: "Impressora de cartões PVC emitindo um cartão com acabamento holográfico (imagem ilustrativa)",
-          }}
-        />
+        <CredencialSection />
         <AboutSection />
       </main>
       <ContactSection />

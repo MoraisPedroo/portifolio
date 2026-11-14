@@ -25,9 +25,11 @@ export type TextOpts = {
   lineHeight?: number;
   tracking?: number;
   maxLines?: number;
+  /** Largura da fonte (ex.: "expanded"), para os títulos no estilo do site. */
+  stretch?: "normal" | "semi-expanded" | "expanded";
 };
 
-type Tracked = CanvasRenderingContext2D & { letterSpacing?: string };
+type Tracked = CanvasRenderingContext2D & { letterSpacing?: string; fontStretch?: string };
 
 /** Pequeno kit de desenho imediato sobre canvas 2D, com regiões clicáveis. */
 export class G {
@@ -49,6 +51,7 @@ export class G {
   private setFont(o: TextOpts) {
     const family = o.font === "mono" ? this.fonts.mono : this.fonts.display;
     this.ctx.font = `${o.weight ?? 500} ${o.size ?? 14}px ${family}`;
+    (this.ctx as Tracked).fontStretch = o.stretch ?? "normal";
     (this.ctx as Tracked).letterSpacing = `${o.tracking ?? 0}px`;
   }
 

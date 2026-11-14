@@ -1,6 +1,7 @@
 import { credencial } from "@/content/site";
 import type { G } from "@/lib/surface";
 import { useDemo } from "@/store/useDemo";
+import { IMAGES, getImage } from "./images";
 
 /** Proporção do cartão CR80 (54 × 85,6 mm), em pixels lógicos. */
 export const CARD_W = 270;
@@ -43,8 +44,8 @@ export function paintCardFront(g: G) {
   band.addColorStop(1, "rgba(16,185,129,0.25)");
   g.rect(0, 0, CARD_W, 118, band);
   g.rr(CARD_W / 2 - 22, 12, 44, 9, 4.5, "#05070A", null);
-  g.rr(20, 36, 26, 26, 6, "#10B981", null);
-  g.text("DP", 33, 42, { size: 11, weight: 800, color: INK, align: "center" });
+  const logo = getImage(IMAGES.logo);
+  if (logo) ctx.drawImage(logo, 18, 34, 30, 30);
   g.text("DP Systems", 54, 40, { size: 15, weight: 750, color: "#FFFFFF", tracking: -0.2 });
   g.text("Credencial", 54, 58, { size: 10.5, weight: 500, color: "#C9BCFF" });
 

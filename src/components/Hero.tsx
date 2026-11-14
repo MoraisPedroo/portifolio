@@ -1,15 +1,19 @@
 import { company } from "@/content/site";
-import { LabelPrinter } from "./LabelPrinter";
+import { HeroMagazine } from "./HeroMagazine";
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative overflow-hidden bg-paper pb-20 pt-28 md:pb-28 md:pt-36">
-      <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-5 md:px-8 lg:grid-cols-[1.12fr_0.88fr]">
+    <section id="inicio" className="snap-page bg-paper pt-16 lg:h-[100svh] lg:min-h-[600px]">
+      <div className="mx-auto grid h-full max-w-[1240px] items-center gap-10 px-5 py-12 md:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:py-[clamp(1rem,4vh,3rem)] [&>*]:min-w-0">
         <div>
-          <p className="mb-6 text-[15px] font-medium text-slate">DP Systems, engenharia de software em São Paulo</p>
-          <h1 className="display text-[clamp(2.5rem,min(6.4vw,10vh),5.4rem)] text-ink">{company.headline}</h1>
-          <p className="mt-7 max-w-[34rem] text-lg leading-relaxed text-slate md:text-xl">{company.intro}</p>
-          <div className="mt-9 flex flex-wrap gap-3">
+          <p className="text-[15px] font-medium text-slate">DP Systems, engenharia de software em São Paulo</p>
+          <h1 className="display mt-[clamp(0.75rem,2.5vh,1.5rem)] text-[clamp(2.4rem,min(5.2vw,8.6vh),4.9rem)] text-ink">
+            {company.headline}
+          </h1>
+          <p className="mt-[clamp(1rem,3vh,1.75rem)] max-w-[34rem] text-[clamp(1rem,2.3vh,1.25rem)] leading-relaxed text-slate">
+            {company.intro}
+          </p>
+          <div className="mt-[clamp(1.25rem,3.5vh,2.25rem)] flex flex-wrap gap-3">
             <a
               href="#dpprinter"
               className="rounded-full bg-ink px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-graphite-2"
@@ -26,7 +30,9 @@ export function Hero() {
             </a>
           </div>
         </div>
-        <LabelPrinter />
+        <div className="h-full min-h-0">
+          <HeroMagazine />
+        </div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 # DP Systems — site institucional
 
-Site de uma página, em rolagem contínua, que apresenta a DP Systems e seus três produtos: DP Printer, EstoqueNTO e Credencial Studio. Dois momentos são 3D e interativos: o armazém do EstoqueNTO e o crachá holográfico do Credencial Studio.
+Site de uma página que apresenta a DP Systems e seus três produtos: DP Printer, EstoqueNTO e Credencial Studio. No desktop cada seção ocupa exatamente uma tela e a rolagem para em cada uma. Três momentos são 3D e interativos: a revista com os produtos na abertura, o armazém do EstoqueNTO e o crachá holográfico do Credencial Studio.
 
 ## Rodar
 
@@ -17,17 +17,19 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 | --- | --- |
 | Textos, links, integrações e dados da empresa | `src/content/site.ts` |
 | Cores e tipografia | `src/app/globals.css` (bloco `@theme`) e `src/lib/fonts.ts` |
-| Abertura com a impressora de etiquetas | `src/components/Hero.tsx`, `LabelPrinter.tsx` |
+| Abertura com a revista 3D | `src/components/Hero.tsx`, `HeroMagazine.tsx`, `src/three/magazine/` |
+| Páginas da revista | `src/three/magazine/pages.ts` |
+| Altura de tela e espaçamentos das seções | `src/components/Section.tsx` |
 | DP Printer (simulador e diagrama) | `src/components/dpprinter/` |
 | EstoqueNTO (armazém e integrações) | `src/components/estoquento/`, `src/three/WarehouseScene.tsx` |
 | Credencial Studio (editor e crachá) | `src/components/credencial/`, `src/three/BadgeScene.tsx`, `src/three/badgeFaces.ts` |
 | Estado das demonstrações | `src/store/useDemo.ts` |
-| Fotos dos produtos | `public/images/` |
+| Logo, fotos e ícone | `public/images/`, `src/app/icon.png` |
 
 ## Como funciona
 
 - Todo texto é HTML de verdade: legível no celular, indexável e acessível.
-- Um único canvas WebGL fixo (`src/three/SharedCanvas.tsx`) desenha os dois palcos 3D com o `<View>` do drei; cada palco é um elemento comum da página e só é renderizado quando está na tela.
+- Um único canvas WebGL fixo (`src/three/SharedCanvas.tsx`) desenha os três palcos 3D com o `<View>` do drei; cada palco é um elemento comum da página e só é renderizado quando está na tela.
 - O crachá usa um shader próprio (película fina, Fresnel e flocos metálicos) sobre uma textura desenhada em canvas 2D, que atualiza enquanto a pessoa digita.
 - Se o FPS cair, o `PerformanceMonitor` reduz a resolução do canvas.
 - Com "reduzir movimento" ativo no sistema, as animações param e o conteúdo continua visível.

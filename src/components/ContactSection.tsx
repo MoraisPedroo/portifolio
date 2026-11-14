@@ -1,5 +1,6 @@
 import { company, contact, credencial, dpprinter, estoquento } from "@/content/site";
 import { Logo } from "./Logo";
+import { INNER, PAGE } from "./Section";
 
 export function ContactSection() {
   const links = [
@@ -9,39 +10,43 @@ export function ContactSection() {
   ];
 
   return (
-    <footer id="contato" className="bg-ink text-white">
-      <div className="mx-auto max-w-[1240px] px-5 pb-12 pt-16 md:px-8 md:pt-24">
-        <h2 className="display max-w-4xl text-[clamp(2.2rem,min(5.6vw,9vh),4.6rem)]">{contact.title}</h2>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-fog">{contact.copy}</p>
-        <a
-          href={company.whatsapp}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-10 inline-flex w-full items-center justify-center rounded-full bg-dp px-8 py-4 text-lg font-bold text-ink transition-colors hover:bg-emerald-400 sm:w-auto"
-        >
-          Conversar pelo WhatsApp
-        </a>
+    <footer id="contato" className={`${PAGE} bg-ink text-white`}>
+      <div className={`${INNER} flex flex-col justify-between gap-12`}>
+        <div className="my-auto">
+          <h2 className="display max-w-4xl text-[clamp(2.2rem,min(5.2vw,8.5vh),4.4rem)]">{contact.title}</h2>
+          <p className="mt-[clamp(0.75rem,2.4vh,1.5rem)] max-w-xl text-[clamp(1rem,2.2vh,1.125rem)] leading-relaxed text-fog">
+            {contact.copy}
+          </p>
+          <a
+            href={company.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-[clamp(1.25rem,3.5vh,2.25rem)] inline-flex w-full items-center justify-center rounded-full bg-dp px-8 py-4 text-lg font-bold text-ink transition-colors hover:bg-emerald-400 sm:w-auto"
+          >
+            Conversar pelo WhatsApp
+          </a>
 
-        <ul className="mt-16 grid gap-3 sm:grid-cols-3">
-          {links.map((link) => (
-            <li key={link.name}>
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-full flex-col rounded-2xl border border-rule-dark px-5 py-4 transition-colors hover:border-fog"
-              >
-                <span className="flex items-center gap-2 font-semibold">
-                  <span className={`size-2.5 rounded-sm ${link.accent}`} />
-                  {link.name}
-                </span>
-                <span className="mt-1 text-[15px] text-fog">{link.text}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+          <ul className="mt-[clamp(1.5rem,4.5vh,3rem)] grid gap-3 sm:grid-cols-3">
+            {links.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-full flex-col rounded-2xl border border-rule-dark px-5 py-3.5 transition-colors hover:border-fog"
+                >
+                  <span className="flex items-center gap-2 font-semibold">
+                    <span className={`size-2.5 rounded-sm ${link.accent}`} />
+                    {link.name}
+                  </span>
+                  <span className="mt-1 text-[15px] text-fog">{link.text}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <div className="mt-20 flex flex-col gap-6 border-t border-rule-dark pt-8 text-sm text-fog md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-4 border-t border-rule-dark pt-5 text-sm text-fog md:flex-row md:items-end md:justify-between">
           <Logo />
           <div className="md:text-right">
             <p>

@@ -36,7 +36,7 @@ export const dpprinter = {
   urlLabel: "dpprinter.com.br",
   requirements: "Windows 7 ou superior. Licença sob medida.",
   title: "Imprima etiquetas direto do navegador, sem driver e sem fila.",
-  copy: "O DP Printer fica na bandeja do Windows e recebe os comandos de impressão do seu sistema web. A etiqueta sai pela USB ou pela rede na hora, e cada impressão fica registrada: quem imprimiu, onde e quando.",
+  copy: "Fica na bandeja do Windows e recebe os comandos do seu sistema web. A etiqueta sai na hora, pela USB ou pela rede, e cada impressão fica registrada: quem imprimiu, onde e quando.",
   stats: [
     { value: "Zero", label: "configuração de driver" },
     { value: "100%", label: "das impressões auditadas" },
@@ -90,7 +90,7 @@ export const estoquento = {
   url: "https://estoquento.vercel.app/",
   urlLabel: "estoquento.vercel.app",
   title: "O estoque inteiro em um painel, com o armazém em 3D.",
-  copy: "Entrada, prateleira, postagem e rastreio no mesmo lugar. O armazém aparece em 3D, e as integrações avisam o cliente, assinam o termo e geram a etiqueta dos Correios sem ninguém copiar dado de uma tela para outra.",
+  copy: "Entrada, prateleira, postagem e rastreio no mesmo painel. As integrações avisam o cliente, assinam o termo e geram a etiqueta dos Correios sozinhas.",
   hubTitle: "Integrações",
   hubStatus: "Todos os sistemas operacionais",
   hubAverage: 753,
@@ -110,7 +110,7 @@ export const estoquento = {
 export const credencial = {
   name: "Credencial Studio",
   title: "Crachás corporativos, do layout à impressora.",
-  copy: "Aplicativo desktop para criar, diagramar e emitir crachás em impressoras de cartão PVC. Monte o cartão com os dados da pessoa e mande imprimir, sem retrabalho.",
+  copy: "Aplicativo desktop para criar, diagramar e emitir crachás em impressoras de cartão PVC, sem retrabalho.",
   features: [
     { title: "Criação", text: "Foto, dados e identidade visual da empresa no mesmo editor." },
     { title: "Diagramação", text: "Layout no formato padrão de cartão CR80, pronto para o PVC." },

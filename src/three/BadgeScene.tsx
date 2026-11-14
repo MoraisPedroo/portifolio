@@ -9,6 +9,7 @@ import { fonts, loadFonts } from "@/lib/canvasFonts";
 import { PageSurface } from "@/lib/surface";
 import { useDemo } from "@/store/useDemo";
 import { CARD_H, CARD_W, paintCardBack, paintCardFront } from "./badgeFaces";
+import { onImageLoad } from "./images";
 
 const HEIGHT = 1.5;
 const WIDTH = HEIGHT * (CARD_W / CARD_H);
@@ -161,9 +162,11 @@ function Badge() {
     let alive = true;
     loadFonts().then(() => alive && repaint());
     const unsubscribe = useDemo.subscribe(repaint);
+    const off = onImageLoad(repaint);
     return () => {
       alive = false;
       unsubscribe();
+      off();
       front.dispose();
       back.dispose();
       frontMaterial.dispose();
