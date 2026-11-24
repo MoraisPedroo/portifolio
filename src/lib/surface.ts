@@ -4,7 +4,7 @@ import { CanvasTexture, LinearMipmapLinearFilter, SRGBColorSpace } from "three";
 export const PW = 600;
 export const PH = 800;
 
-export type Fonts = { display: string; mono: string };
+export type Fonts = { display: string; mono: string; editorial: string };
 
 export type Hit = {
   id: string;
@@ -19,7 +19,7 @@ export type TextOpts = {
   size?: number;
   weight?: number;
   color?: string;
-  font?: "display" | "mono";
+  font?: "display" | "mono" | "editorial";
   align?: CanvasTextAlign;
   maxWidth?: number;
   lineHeight?: number;
@@ -49,7 +49,7 @@ export class G {
   }
 
   private setFont(o: TextOpts) {
-    const family = o.font === "mono" ? this.fonts.mono : this.fonts.display;
+    const family = o.font === "mono" ? this.fonts.mono : o.font === "editorial" ? this.fonts.editorial : this.fonts.display;
     this.ctx.font = `${o.weight ?? 500} ${o.size ?? 14}px ${family}`;
     (this.ctx as Tracked).fontStretch = o.stretch ?? "normal";
     (this.ctx as Tracked).letterSpacing = `${o.tracking ?? 0}px`;

@@ -1,4 +1,4 @@
-import { credencial } from "@/content/site";
+import { credencialDemo } from "@/content/site";
 import type { G } from "@/lib/surface";
 import { useDemo } from "@/store/useDemo";
 import { IMAGES, getImage } from "./images";
@@ -7,10 +7,9 @@ import { IMAGES, getImage } from "./images";
 export const CARD_W = 270;
 export const CARD_H = 428;
 
-const INK = "#0E1116";
-const SLATE = "#4A5463";
-const RULE = "#DDE2E8";
-const ACCESS_COLORS = ["#047857", "#B45309", "#B91C1C"];
+const INK = "#0F172A";
+const SLATE = "#475569";
+const RULE = "#CBD5E1";
 
 function barcode(g: G, x: number, y: number, w: number, h: number) {
   let cx = x;
@@ -26,89 +25,91 @@ function barcode(g: G, x: number, y: number, w: number, h: number) {
 function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "?";
-  const first = parts[0][0];
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
-  return (first + last).toUpperCase();
+  return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
+/**
+ * Frente no estilo dos modelos do Credencial Studio: foto, nome e função sobre
+ * uma faixa inferior cuja cor muda com a função (Aprendiz, Terceiro, Visitante).
+ */
 export function paintCardFront(g: G) {
   const demo = useDemo.getState();
+  const fn = credencialDemo.functions[demo.fn];
   const { ctx } = g;
   g.rect(0, 0, CARD_W, CARD_H, "#FFFFFF");
 
-  // Faixa superior com a marca.
-  g.rect(0, 0, CARD_W, 118, INK);
-  const band = ctx.createLinearGradient(0, 0, CARD_W, 118);
-  band.addColorStop(0, "rgba(155,123,255,0.55)");
-  band.addColorStop(0.6, "rgba(155,123,255,0.08)");
-  band.addColorStop(1, "rgba(16,185,129,0.25)");
-  g.rect(0, 0, CARD_W, 118, band);
-  g.rr(CARD_W / 2 - 22, 12, 44, 9, 4.5, "#05070A", null);
+  // Topo com a marca da empresa emissora.
   const logo = getImage(IMAGES.logo);
-  if (logo) ctx.drawImage(logo, 18, 34, 30, 30);
-  g.text("DP Systems", 54, 40, { size: 15, weight: 750, color: "#FFFFFF", tracking: -0.2 });
-  g.text("Credencial", 54, 58, { size: 10.5, weight: 500, color: "#C9BCFF" });
+  if (logo) ctx.drawImage(logo, 20, 22, 28, 28);
+  g.text("DP Systems", 56, 26, { size: 15, weight: 750, color: INK, tracking: -0.2 });
+  g.text("Credencial", CARD_W - 20, 29, { size: 11, weight: 600, color: SLATE, align: "right" });
 
-  // Monograma no lugar da foto.
-  const cx = CARD_W / 2;
-  const cy = 132;
-  g.dot(cx, cy, 52, "#FFFFFF");
-  const disc = ctx.createLinearGradient(cx - 48, cy - 48, cx + 48, cy + 48);
-  disc.addColorStop(0, "#EDE7FF");
-  disc.addColorStop(1, "#D9F7EC");
-  g.dot(cx, cy, 47, "#E7EAF0");
-  ctx.fillStyle = disc;
+  // Foto (monograma no lugar da foto real).
+  const px = 55;
+  const py = 70;
+  const pw = 160;
+  const ph = 180;
+  const photo = ctx.createLinearGradient(px, py, px + pw, py + ph);
+  photo.addColorStop(0, "#E2E8F0");
+  photo.addColorStop(1, "#CBD5E1");
+  g.rr(px, py, pw, ph, 10, photo, null);
+  g.text(initials(demo.name), CARD_W / 2, py + ph / 2 - 30, { size: 56, weight: 760, color: "#64748B", align: "center", tracking: -2 });
+
+  // Faixa inferior com nome e função em branco.
+  const bandY = 280;
   ctx.beginPath();
-  ctx.arc(cx, cy, 47, 0, Math.PI * 2);
+  ctx.moveTo(0, bandY + 18);
+  ctx.quadraticCurveTo(CARD_W / 2, bandY - 14, CARD_W, bandY + 18);
+  ctx.lineTo(CARD_W, CARD_H);
+  ctx.lineTo(0, CARD_H);
+  ctx.closePath();
+  ctx.fillStyle = fn.band;
   ctx.fill();
-  g.text(initials(demo.name), cx, cy - 17, { size: 32, weight: 760, color: "#3B2A84", align: "center", tracking: -1 });
 
-  const name = demo.name.trim() || "Seu nome";
-  let size = 24;
-  while (size > 13 && g.measure(name, { size, weight: 780, tracking: -0.6 }) > CARD_W - 32) size -= 1;
-  g.text(name, cx, 200, { size, weight: 780, color: INK, align: "center", tracking: -0.6 });
-  g.text(demo.role.trim() || "Seu cargo", cx, 234, { size: 12, weight: 500, color: SLATE, align: "center", maxWidth: CARD_W - 36, maxLines: 1 });
-
-  const access = credencial.access[demo.access];
-  const color = ACCESS_COLORS[demo.access];
-  const aw = g.measure(access, { size: 11, weight: 650 }) + 34;
-  g.rr(cx - aw / 2, 264, aw, 26, 13, color + "14", color);
-  g.dot(cx - aw / 2 + 13, 277, 3.5, color);
-  g.text(access, cx - aw / 2 + 23, 270, { size: 11, weight: 650, color: INK });
-
-  g.line(22, 314, CARD_W - 22, 314, RULE);
-  barcode(g, 30, 330, CARD_W - 60, 40);
-  g.text("ID 0001  2026", cx, 380, { font: "mono", size: 10, weight: 600, color: SLATE, align: "center", tracking: 1.2 });
+  const name = demo.name.trim() || (fn.fixed ? "" : "Seu nome");
+  let size = 25;
+  while (size > 13 && g.measure(name, { size, weight: 780, tracking: -0.5 }) > CARD_W - 32) size -= 1;
+  if (name) g.text(name, CARD_W / 2, 318, { size, weight: 780, color: "#FFFFFF", align: "center", tracking: -0.5 });
+  const role = fn.fixed ? fn.label : demo.role.trim() || "Sua função";
+  g.text(role, CARD_W / 2, name ? 352 : 336, { size: 13, weight: 600, color: "#FFFFFFE6", align: "center", maxWidth: CARD_W - 36, maxLines: 1 });
 }
 
+/**
+ * Verso com caixas de texto em preto puro, como o Credencial Studio desenha
+ * para a impressora. Terceiro e Visitante não mostram a data de admissão.
+ */
 export function paintCardBack(g: G) {
-  const { ctx } = g;
-  g.rect(0, 0, CARD_W, CARD_H, "#F3F5F7");
-  g.rect(0, 34, CARD_W, 50, "#0B0E14");
+  const demo = useDemo.getState();
+  const fn = credencialDemo.functions[demo.fn];
+  const sample = credencialDemo.sample;
+  g.rect(0, 0, CARD_W, CARD_H, "#FFFFFF");
+  g.text("DPSystems", CARD_W - 18, 18, { size: 11, weight: 700, color: INK, align: "right" });
 
-  const chip = ctx.createLinearGradient(26, 116, 80, 158);
-  chip.addColorStop(0, "#FDE68A");
-  chip.addColorStop(1, "#B45309");
-  g.rr(26, 116, 54, 42, 7, chip, "#92400E");
-  g.line(26, 137, 80, 137, "#92400E");
-  g.line(44, 116, 44, 158, "#92400E");
-  g.line(62, 116, 62, 158, "#92400E");
+  const box = (label: string, value: string, x: number, y: number, w: number, center = false) => {
+    g.rr(x, y, w, 58, 6, null, INK, 1.6);
+    g.text(label, x + 10, y + 8, { size: 10.5, weight: 700, color: INK });
+    g.text(value, center ? x + w / 2 : x + 10, y + 28, { size: 18, weight: 750, color: INK, align: center ? "center" : "left" });
+  };
 
-  g.text("Cartão de identificação", 96, 120, { size: 12, weight: 700, color: INK });
-  g.text("Uso pessoal e intransferível.", 96, 139, { size: 10.5, weight: 500, color: SLATE });
+  const firstName = demo.name.trim().split(/\s+/)[0] || sample.nameBack;
+  box("Nome", fn.fixed && !demo.name.trim() ? fn.label : firstName, 20, 54, CARD_W - 40);
+  if (fn.fixed && fn.label !== "Aprendiz") {
+    box("Crachá nº", sample.badge, 20, 128, CARD_W - 40, true);
+  } else {
+    box("Crachá nº", sample.badge, 20, 128, 108);
+    box("Admissão", sample.admission, 138, 128, CARD_W - 158);
+  }
 
-  g.text("Em caso de perda, avise a administração da sua unidade.", 26, 190, {
-    size: 11.5,
+  g.line(20, 214, CARD_W - 20, 214, RULE);
+  g.text("Uso pessoal e intransferível. Em caso de perda, avise a administração da unidade.", 20, 228, {
+    size: 11,
     weight: 500,
     color: SLATE,
-    maxWidth: CARD_W - 52,
-    lineHeight: 17,
+    maxWidth: CARD_W - 40,
+    lineHeight: 15,
   });
-
-  g.rr(26, 256, CARD_W - 52, 64, 8, "#FFFFFF", RULE);
-  barcode(g, 38, 268, CARD_W - 76, 40);
-
-  g.line(26, 350, CARD_W - 26, 350, RULE);
-  g.text("Emitido com Credencial Studio", CARD_W / 2, 366, { size: 11, weight: 600, color: SLATE, align: "center" });
-  g.text("DP Systems", CARD_W / 2, 386, { size: 14, weight: 780, color: INK, align: "center", tracking: -0.3 });
+  g.rr(20, 296, CARD_W - 40, 66, 6, "#FFFFFF", RULE);
+  barcode(g, 32, 308, CARD_W - 64, 42);
+  g.text(sample.badge, CARD_W / 2, 374, { font: "mono", size: 12, weight: 700, color: INK, align: "center", tracking: 2 });
+  g.text("Impresso com o Credencial Studio", CARD_W / 2, 398, { size: 10, weight: 600, color: SLATE, align: "center" });
 }

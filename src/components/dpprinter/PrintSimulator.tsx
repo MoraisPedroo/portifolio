@@ -1,20 +1,20 @@
 "use client";
 
-import { dpprinter } from "@/content/site";
+import { dpprinterDemo } from "@/content/site";
 import { useNow } from "@/lib/useNow";
 import { PRINT_MS, useDemo } from "@/store/useDemo";
 import { Barcode } from "../Barcode";
 
 const ROWS = [
-  { key: "lab", label: "Unidade", options: dpprinter.sim.labs },
-  { key: "operator", label: "Operador", options: dpprinter.sim.operators },
-  { key: "station", label: "Estação", options: dpprinter.sim.stations },
+  { key: "lab", label: "Unidade", options: dpprinterDemo.labs },
+  { key: "operator", label: "Operador", options: dpprinterDemo.operators },
+  { key: "station", label: "Estação", options: dpprinterDemo.stations },
 ] as const;
 
 const STEPS = [
-  { text: "Comando recebido", at: 0.2 },
-  { text: "Enviado pela USB", at: 0.6 },
-  { text: "Auditoria gravada", at: 0.95 },
+  { text: "POST /write em 127.0.0.1:9100", at: 0.2 },
+  { text: "Bytes enviados por USB Raw", at: 0.6 },
+  { text: "Evento gravado no inventário", at: 0.95 },
 ];
 
 const ease = (v: number) => 1 - Math.pow(1 - Math.max(0, Math.min(1, v)), 3);
@@ -32,7 +32,7 @@ function JsonView({ json }: { json: string }) {
             {m[1]}
             <span className="text-fog">{m[2]}</span>
             <span className="text-fog/60">{m[3]}</span>
-            <span className={isString ? "text-emerald-300" : "text-amber-300"}>{m[4]}</span>
+            <span className={isString ? "text-cyan-300" : "text-amber-300"}>{m[4]}</span>
           </div>
         );
       })}
@@ -53,8 +53,8 @@ export function PrintSimulator() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-xl font-bold text-white">Teste uma impressão</h3>
         <span className="flex items-center gap-2 text-sm text-fog">
-          <span className="size-2 rounded-full bg-dp" />
-          Simulação, nada sai do navegador
+          <span className="size-2 rounded-full bg-prt" />
+          Simulação: nada sai do seu navegador
         </span>
       </div>
 
@@ -75,7 +75,7 @@ export function PrintSimulator() {
                     aria-pressed={active}
                     onClick={() => demo.pick(row.key, i)}
                     className={`min-h-9 rounded-full border px-3 font-mono text-[13px] transition-colors ${
-                      active ? "border-dp bg-dp text-ink" : "border-rule-dark text-white hover:border-fog"
+                      active ? "border-prt bg-prt text-ink" : "border-rule-dark text-white hover:border-fog"
                     }`}
                   >
                     {option}
@@ -93,7 +93,7 @@ export function PrintSimulator() {
             type="button"
             onClick={demo.print}
             disabled={busy}
-            className="w-full rounded-2xl bg-dp px-5 py-3.5 text-base font-bold text-ink transition-colors hover:bg-emerald-400 disabled:bg-dp/40"
+            className="w-full rounded-2xl bg-prt px-5 py-3.5 text-base font-bold text-ink transition-colors hover:bg-cyan-300 disabled:bg-prt/40"
           >
             {busy ? "Imprimindo..." : "Imprimir etiqueta de teste"}
           </button>
@@ -103,7 +103,7 @@ export function PrintSimulator() {
               const doing = p !== null && !done && p > (i === 0 ? 0 : STEPS[i - 1].at);
               return (
                 <li key={step.text} className={`flex items-center gap-1.5 text-[13px] ${done || doing ? "text-white" : "text-fog/70"}`}>
-                  <span className={`size-2 rounded-full ${done ? "bg-dp" : doing ? "bg-signal" : "bg-rule-dark"}`} />
+                  <span className={`size-2 rounded-full ${done ? "bg-prt" : doing ? "bg-signal" : "bg-rule-dark"}`} />
                   {step.text}
                 </li>
               );
@@ -115,8 +115,8 @@ export function PrintSimulator() {
         <div aria-hidden className="hidden sm:block">
           <div className="relative z-10 rounded-xl bg-black px-3 pb-2 pt-2.5">
             <div className="flex items-center gap-2 text-xs text-fog">
-              <span className={`size-1.5 rounded-full ${busy ? "bg-dp" : "bg-rule-dark"}`} />
-              Térmica USB
+              <span className={`size-1.5 rounded-full ${busy ? "bg-prt" : "bg-rule-dark"}`} />
+              Zebra ZD230 · USB
             </div>
             <div className="mt-2 h-1.5 rounded-full bg-graphite-2" />
           </div>
@@ -125,9 +125,9 @@ export function PrintSimulator() {
               className="rounded-b-md bg-stock px-3 pb-2.5 pt-2 text-ink"
               style={{ transform: `translateY(${(emerge - 1) * 100}%)` }}
             >
-              <div className="font-mono text-[11px] font-bold">{dpprinter.sim.labs[demo.lab]}</div>
+              <div className="font-mono text-[11px] font-bold">{dpprinterDemo.labs[demo.lab]}</div>
               <Barcode className="mt-1 h-7 w-full text-ink" bars={26} />
-              <div className="mt-1 truncate font-mono text-[10px] text-slate">{dpprinter.sim.operators[demo.operator]}</div>
+              <div className="mt-1 truncate font-mono text-[10px] text-slate">{dpprinterDemo.operators[demo.operator]}</div>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ export function PrintSimulator() {
 
       <div className="mt-[clamp(0.75rem,2vh,1.25rem)] overflow-hidden rounded-2xl bg-ink">
         <div className="flex items-center justify-between gap-3 border-b border-rule-dark px-4 py-2">
-          <span className="font-mono text-[13px] text-fog">auditoria.json</span>
+          <span className="font-mono text-[13px] text-fog">{"inventario/{lc}/{serial}"}</span>
           {last && (
             <button
               type="button"
@@ -148,12 +148,12 @@ export function PrintSimulator() {
         </div>
         <pre className="h-[clamp(6rem,21vh,13rem)] overflow-auto px-4 py-2.5 font-mono text-[13px] leading-[1.45rem] text-fog">
           {busy ? (
-            <span className="text-fog/70">aguardando retorno da impressora...</span>
+            <span className="text-fog/70">enviando para a impressora...</span>
           ) : last ? (
             <JsonView json={last.json} />
           ) : (
             <span className="whitespace-pre-wrap text-fog/70">
-              O registro de auditoria aparece aqui depois da primeira impressão.
+              O evento que o DP Printer grava no inventário aparece aqui depois da primeira impressão.
             </span>
           )}
         </pre>

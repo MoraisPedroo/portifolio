@@ -4,8 +4,9 @@ import { ContactShadows, Environment, Lightformer, PerspectiveCamera } from "@re
 import { useFrame } from "@react-three/fiber";
 import { easing } from "maath";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Group, MathUtils, PerspectiveCamera as Camera } from "three";
+import { Color, Group, MathUtils, PerspectiveCamera as Camera, PointLight } from "three";
 import { fonts, loadFonts } from "@/lib/canvasFonts";
+import { playPageFlip } from "@/lib/pageSound";
 import { PageSurface } from "@/lib/surface";
 import { MAG_LAST, MAG_SHEETS, useMagazine } from "@/store/useMagazine";
 import { onImageLoad, preloadImages } from "../images";
@@ -13,7 +14,11 @@ import { MAGAZINE_PAGES } from "./pages";
 import { PAGE_HEIGHT, PAGE_WIDTH, Sheet } from "./Sheet";
 
 const FOV = 30;
+/** Cor da luz de recorte em cada estado: muda junto com o fundo. */
+const ACCENTS = ["#E8C38A", "#22D3EE", "#F26A1B", "#3B82F6", "#E8C38A"].map((hex) => new Color(hex));
 const HALF_TAN = Math.tan(MathUtils.degToRad(FOV / 2));
+/** Ponteiro limitado ao palco: fora dele a revista não gira nem desliza demais. */
+const px = (v: number) => MathUtils.clamp(v, -1, 1);
 
 /** Enquadra a capa fechada ou a revista aberta, conforme a proporção do palco. */
 function Rig({ open }: { open: boolean }) {
@@ -25,15 +30,25 @@ function Rig({ open }: { open: boolean }) {
     const width = open ? PAGE_WIDTH * 2 : PAGE_WIDTH;
     const fit = Math.max((PAGE_HEIGHT * 1.16) / (2 * HALF_TAN), (width * 1.1) / (2 * HALF_TAN * aspect));
     easing.damp(distance, "current", fit, 0.35, delta);
-    camera.current.position.set(state.pointer.x * 0.12, 0.05 + state.pointer.y * 0.08, distance.current);
+    camera.current.position.set(px(state.pointer.x) * 0.12, 0.05 + px(state.pointer.y) * 0.08, distance.current);
     camera.current.lookAt(0, 0, 0);
   });
   return <PerspectiveCamera ref={camera} makeDefault fov={FOV} near={0.1} far={40} position={[0, 0, 6]} />;
 }
 
-export function MagazineScene() {
-  const page = useMagazine((s) => s.page);
+type Props = {
+  /** Fixa a revista numa página (ex.: capa na Apresentação). */
+  fixedPage?: number;
+  /** O que acontece ao clicar numa folha; por padrão, vira a página. */
+  onFlip?: () => void;
+};
+
+export function MagazineScene({ fixedPage, onFlip }: Props) {
+  const storePage = useMagazine((s) => s.page);
+  const page = fixedPage ?? storePage;
   const root = useRef<Group>(null);
+  const rim = useRef<PointLight>(null);
+  const firstShown = useRef(true);
 
   // Vira uma folha por vez quando o salto é de várias páginas.
   const [shown, setShown] = useState(page);
@@ -45,6 +60,15 @@ export function MagazineScene() {
     );
     return () => clearTimeout(timer);
   }, [page, shown]);
+
+  // Uma folha virou: toca o som (se não estiver no mudo).
+  useEffect(() => {
+    if (firstShown.current) {
+      firstShown.current = false;
+      return;
+    }
+    if (fixedPage === undefined && !useMagazine.getState().muted) playPageFlip();
+  }, [shown, fixedPage]);
 
   const surfaces = useMemo(() => {
     const scale = Math.min(2.4, Math.max(1.6, window.devicePixelRatio * 1.2));
@@ -73,15 +97,17 @@ export function MagazineScene() {
     // Fechada, a revista fica centralizada na capa ou na contracapa.
     const x = shown === 0 ? -PAGE_WIDTH / 2 : shown === MAG_LAST ? PAGE_WIDTH / 2 : 0;
     easing.damp(root.current.position, "x", x, 0.35, delta);
-    easing.dampE(root.current.rotation, [-0.22 - state.pointer.y * 0.05, -0.08 + state.pointer.x * 0.1, 0], 0.5, delta);
+    easing.dampE(root.current.rotation, [-0.22 - px(state.pointer.y) * 0.05, -0.08 + px(state.pointer.x) * 0.1, 0], 0.5, delta);
+    if (rim.current) easing.dampC(rim.current.color, ACCENTS[shown] ?? ACCENTS[0], 0.6, delta);
   });
 
-  const flip = () => useMagazine.getState().next();
+  const flip = onFlip ?? (() => useMagazine.getState().next());
 
   return (
     <>
       <Rig open={shown > 0 && shown < MAG_LAST} />
       <ambientLight intensity={0.55} />
+      <pointLight ref={rim} position={[-3, 1.5, -1.5]} intensity={14} distance={9} color="#E8C38A" />
       <spotLight position={[2.5, 4, 6]} angle={0.5} penumbra={0.8} intensity={60} castShadow shadow-mapSize={[1024, 1024]} shadow-bias={-0.0002} />
       <Environment resolution={128} frames={1} environmentIntensity={0.4}>
         <Lightformer form="rect" intensity={2} position={[0, 4, 3]} rotation-x={Math.PI / 2} scale={[8, 3, 1]} />

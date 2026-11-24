@@ -11,24 +11,31 @@
 @theme {
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-editorial: var(--font-newsreader), Georgia, serif;
 
-  --color-ink: #0e1116;
+  --color-ink: #0b0d10;
   --color-graphite: #171c24;
   --color-graphite-2: #1f2530;
   --color-rule-dark: #2a313d;
   --color-fog: #a3adbb;
 
-  --color-paper: #f3f5f7;
+  --color-paper: #f2f0eb;
   --color-stock: #ffffff;
   --color-rule: #dde2e8;
   --color-slate: #4a5463;
 
+  /* DP Systems (marca) */
   --color-dp: #10b981;
   --color-dp-deep: #047857;
+  --color-brass: #e8c38a;
+  /* DP Printer */
+  --color-prt: #22d3ee;
+  --color-prt-deep: #0e7490;
   --color-nto: #f26a1b;
   --color-nto-deep: #c2410c;
-  --color-cred: #9b7bff;
-  --color-cred-deep: #6d28d9;
+  /* Credencial Studio (azul da identidade do app) */
+  --color-cred: #3b82f6;
+  --color-cred-deep: #1d4ed8;
   --color-signal: #f5a524;
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
@@ -65,6 +72,16 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Títulos editoriais em serifa, como numa revista. */
+.editorial {
+  font-family: var(--font-editorial);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-wrap: balance;
+  font-optical-sizing: auto;
 }
 
 /* Títulos expandidos: a assinatura tipográfica do site. */
@@ -140,5 +157,22 @@ button:disabled {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Painel da revista entra junto com a página. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hud-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .hud-in {
+    animation: hud-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }

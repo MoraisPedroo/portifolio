@@ -1,18 +1,19 @@
-import { company, credencial, dpprinter, estoquento } from "@/content/site";
+import { company } from "@/content/site";
 import { G, PH, PW, Painter } from "@/lib/surface";
 import { IMAGES, drawCover, getImage } from "../images";
 
 /**
- * Páginas da revista da abertura. Ela aparece pequena, então a tipografia
- * é grande e cada página diz uma coisa só. Cabeçalho corrido, número de
- * página e sombra na dobra dão o acabamento de revista impressa.
+ * Páginas da revista. Ela aparece pequena, então a tipografia é grande e cada
+ * página diz uma coisa só. Os detalhes clicáveis ficam no painel ao lado.
  */
 
-const INK = "#0E1116";
-const PAPER = "#F6F4EF";
+const INK = "#0B0D10";
+const PAPER = "#F2F0EB";
 const FOG = "#A3ADBB";
 const SLATE = "#4A5463";
-const ISSUE = "Edição 01 — Novembro 2026";
+const ISSUE = "Edição 01 — 2026";
+
+const ACCENT = { dp: "#22D3EE", nto: "#F26A1B", cred: "#3B82F6", brand: "#10B981" };
 
 type Side = "left" | "right";
 
@@ -32,16 +33,6 @@ function gutter(g: G, side: Side, strength = 0.32) {
   g.rect(0, 0, PW, PH, shade);
 }
 
-/** Cabeçalho corrido e número da página, como numa revista impressa. */
-function chrome(g: G, side: Side, page: number, section: string, dark: boolean) {
-  const color = dark ? FOG : SLATE;
-  const outer = side === "left" ? 48 : PW - 48;
-  const align = side;
-  g.text(side === "left" ? "DP Systems" : section, outer, 40, { size: 18, weight: 700, color, align });
-  g.text(String(page).padStart(2, "0"), outer, PH - 56, { font: "mono", size: 20, weight: 600, color, align });
-  g.line(48, 72, PW - 48, 72, dark ? "rgba(255,255,255,0.14)" : "rgba(14,17,22,0.14)");
-}
-
 function barcode(g: G, x: number, y: number, w: number, h: number, color: string) {
   let cx = x;
   let i = 0;
@@ -57,39 +48,38 @@ const paintCover: Painter = (g) => {
   g.rect(0, 0, PW, PH, INK);
   const photo = getImage(IMAGES.dpprinter);
   if (photo) drawCover(g.ctx, photo, 0, 0, PW, PH);
-  // Escurece em cima (logotipo) e embaixo (chamadas).
   const top = g.ctx.createLinearGradient(0, 0, 0, 330);
-  top.addColorStop(0, "rgba(14,17,22,0.92)");
-  top.addColorStop(1, "rgba(14,17,22,0)");
+  top.addColorStop(0, "rgba(11,13,16,0.94)");
+  top.addColorStop(1, "rgba(11,13,16,0)");
   g.rect(0, 0, PW, 330, top);
-  const bottom = g.ctx.createLinearGradient(0, PH * 0.42, 0, PH);
-  bottom.addColorStop(0, "rgba(14,17,22,0)");
-  bottom.addColorStop(0.55, "rgba(14,17,22,0.82)");
-  bottom.addColorStop(1, "rgba(14,17,22,0.96)");
-  g.rect(0, PH * 0.42, PW, PH * 0.58, bottom);
+  const bottom = g.ctx.createLinearGradient(0, PH * 0.4, 0, PH);
+  bottom.addColorStop(0, "rgba(11,13,16,0)");
+  bottom.addColorStop(0.5, "rgba(11,13,16,0.84)");
+  bottom.addColorStop(1, "rgba(11,13,16,0.97)");
+  g.rect(0, PH * 0.4, PW, PH * 0.6, bottom);
 
-  // Logotipo da revista, ocupando a largura como um título de banca.
+  // Título de banca, ocupando a largura.
   let size = 120;
   while (size > 60 && g.measure("DP SYSTEMS", { size, weight: 850, stretch: "expanded", tracking: -4 }) > PW - 70) size -= 2;
   g.text("DP SYSTEMS", 34, 34, { size, weight: 850, color: "#FFFFFF", stretch: "expanded", tracking: -4 });
-  g.rect(36, 40 + size, PW - 72, 3, "#10B981");
+  g.rect(36, 40 + size, PW - 72, 3, "#E8C38A");
   g.text(ISSUE, 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0" });
-  g.text("Engenharia sob medida", PW - 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0", align: "right" });
+  g.text("Pinheiros, São Paulo", PW - 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0", align: "right" });
 
-  g.text("Software que liga o seu sistema ao mundo físico", 40, 440, {
-    size: 40,
-    weight: 800,
+  g.text("Portfólio de engenharia e produtos", 40, 430, {
+    font: "editorial",
+    size: 52,
+    weight: 600,
     color: "#FFFFFF",
-    stretch: "semi-expanded",
-    tracking: -1.2,
-    maxWidth: 470,
-    lineHeight: 44,
+    maxWidth: 480,
+    lineHeight: 54,
+    tracking: -1,
   });
 
   const lines = [
-    { name: dpprinter.name, text: "etiquetas sem driver", color: "#10B981" },
-    { name: estoquento.name, text: "o armazém em 3D", color: "#F26A1B" },
-    { name: credencial.name, text: "crachás em PVC", color: "#9B7BFF" },
+    { name: "DP Printer", text: "etiquetas sem driver", color: ACCENT.dp },
+    { name: "EstoqueNTO", text: "o parque em comodato", color: ACCENT.nto },
+    { name: "Credencial Studio", text: "crachás CR80", color: ACCENT.cred },
   ];
   lines.forEach((line, i) => {
     const y = 590 + i * 38;
@@ -99,46 +89,57 @@ const paintCover: Painter = (g) => {
     g.text(line.text, 66 + nameW, y + 1, { size: 22, weight: 500, color: "#C9D0DA" });
   });
 
-  // Código de barras de banca.
   g.rr(PW - 150, PH - 96, 112, 70, 6, "#FFFFFF", null);
   barcode(g, PW - 141, PH - 88, 94, 40, INK);
   g.text("Nº 01", PW - 94, PH - 44, { font: "mono", size: 13, weight: 700, color: INK, align: "center" });
 };
 
-type Product = {
+type ProductPage = {
   name: string;
+  kicker: string;
   line: string;
+  stat?: { value: string; label: string };
   points: string[];
   accent: string;
   dark: boolean;
   page: number;
 };
 
-function productPage(product: Product): Painter {
+function productPage(product: ProductPage): Painter {
   return (g) => {
     const fg = product.dark ? "#FFFFFF" : INK;
     const soft = product.dark ? FOG : SLATE;
+    const rule = product.dark ? "rgba(255,255,255,0.14)" : "rgba(11,13,16,0.14)";
     g.rect(0, 0, PW, PH, product.dark ? INK : PAPER);
 
-    chrome(g, "left", product.page, "", product.dark);
-    g.rect(48, 112, 64, 8, product.accent);
-    g.text(`Produto ${(product.page - 2) / 2 + 1} de 3`, 48, 140, { size: 22, weight: 600, color: soft });
+    g.text("DP Systems", 48, 40, { size: 18, weight: 700, color: soft });
+    g.line(48, 72, PW - 90, 72, rule);
+    g.rect(48, 108, 64, 8, product.accent);
+    g.text(product.kicker, 48, 134, { size: 22, weight: 600, color: soft });
 
-    // Diminui o título até a palavra mais longa caber na página.
-    let size = 76;
+    let size = 78;
     const longest = product.name.split(" ").sort((a, b) => b.length - a.length)[0];
-    while (size > 44 && g.measure(longest, { size, weight: 800, stretch: "expanded", tracking: -2.5 }) > 480) size -= 2;
-    let y = 186;
-    y += g.text(product.name, 48, y, { size, weight: 800, color: fg, stretch: "expanded", tracking: -2.5, lineHeight: size + 4, maxWidth: 500 });
-    y += 24;
-    y += g.text(product.line, 48, y, { size: 30, weight: 500, color: soft, maxWidth: 470, lineHeight: 40 });
-    y += 40;
-    g.line(48, y, PW - 90, y, product.dark ? "rgba(255,255,255,0.14)" : "rgba(14,17,22,0.14)");
-    y += 30;
+    while (size > 44 && g.measure(longest, { font: "editorial", size, weight: 600, tracking: -2 }) > 470) size -= 2;
+    let y = 176;
+    y += g.text(product.name, 46, y, { font: "editorial", size, weight: 600, color: fg, tracking: -2, lineHeight: size + 2, maxWidth: 480 });
+    y += 18;
+    y += g.text(product.line, 48, y, { size: 29, weight: 500, color: soft, maxWidth: 460, lineHeight: 38 });
+
+    if (product.stat) {
+      y += 30;
+      g.text(product.stat.value, 48, y, { font: "editorial", size: 64, weight: 600, color: product.accent, tracking: -1.5 });
+      g.text(product.stat.label, 48, y + 70, { size: 22, weight: 600, color: fg, maxWidth: 440, lineHeight: 28 });
+      y += 118;
+    } else {
+      y += 34;
+    }
+    g.line(48, y, PW - 90, y, rule);
+    y += 26;
     product.points.forEach((point) => {
-      g.rr(48, y + 10, 16, 16, 4, product.accent, null);
-      y += g.text(point, 84, y, { size: 27, weight: 600, color: fg, maxWidth: 440, lineHeight: 36 }) + 20;
+      g.rr(48, y + 9, 14, 14, 3, product.accent, null);
+      y += g.text(point, 80, y, { size: 25, weight: 600, color: fg, maxWidth: 440, lineHeight: 32 }) + 14;
     });
+    g.text(String(product.page).padStart(2, "0"), 48, PH - 56, { font: "mono", size: 20, weight: 600, color: soft });
     gutter(g, "left", product.dark ? 0.5 : 0.22);
   };
 }
@@ -149,16 +150,16 @@ function photoPage(src: string, caption: string, accent: string, page: number, s
     const image = getImage(src);
     if (image) drawCover(g.ctx, image, 0, 0, PW, PH);
     const top = g.ctx.createLinearGradient(0, 0, 0, 120);
-    top.addColorStop(0, "rgba(14,17,22,0.75)");
-    top.addColorStop(1, "rgba(14,17,22,0)");
+    top.addColorStop(0, "rgba(11,13,16,0.75)");
+    top.addColorStop(1, "rgba(11,13,16,0)");
     g.rect(0, 0, PW, 120, top);
     const shade = g.ctx.createLinearGradient(0, PH * 0.55, 0, PH);
-    shade.addColorStop(0, "rgba(14,17,22,0)");
-    shade.addColorStop(1, "rgba(14,17,22,0.92)");
+    shade.addColorStop(0, "rgba(11,13,16,0)");
+    shade.addColorStop(1, "rgba(11,13,16,0.93)");
     g.rect(0, 0, PW, PH, shade);
     g.text(section, PW - 48, 40, { size: 18, weight: 700, color: "#E6EAF0", align: "right" });
-    g.rect(48, PH - 170, 6, 64, accent);
-    g.text(caption, 68, PH - 172, { size: 27, weight: 600, color: "#FFFFFF", maxWidth: 460, lineHeight: 34 });
+    g.rect(48, PH - 172, 6, 66, accent);
+    g.text(caption, 68, PH - 174, { font: "editorial", size: 32, weight: 500, color: "#FFFFFF", maxWidth: 460, lineHeight: 36 });
     g.text("Imagem ilustrativa", 48, PH - 56, { size: 17, weight: 500, color: FOG });
     g.text(String(page).padStart(2, "0"), PW - 48, PH - 56, { font: "mono", size: 20, weight: 600, color: "#E6EAF0", align: "right" });
     gutter(g, "right", 0.55);
@@ -168,49 +169,62 @@ function photoPage(src: string, caption: string, accent: string, page: number, s
 const paintBack: Painter = (g) => {
   g.rect(0, 0, PW, PH, INK);
   const glow = g.ctx.createRadialGradient(140, 160, 10, 140, 160, 520);
-  glow.addColorStop(0, "rgba(16,185,129,0.22)");
-  glow.addColorStop(1, "rgba(16,185,129,0)");
+  glow.addColorStop(0, "rgba(232,195,138,0.18)");
+  glow.addColorStop(1, "rgba(232,195,138,0)");
   g.rect(0, 0, PW, PH, glow);
   logo(g, 48, 60, 84);
-  g.text("Vamos conversar?", 48, 230, { size: 76, weight: 800, color: "#FFFFFF", stretch: "expanded", tracking: -2.5, lineHeight: 80, maxWidth: 500 });
-  g.text("Engenharia de software sob medida, em São Paulo.", 48, 420, { size: 30, weight: 500, color: FOG, maxWidth: 460, lineHeight: 40 });
-  g.rr(48, 540, 330, 72, 36, "#10B981", null);
-  g.text("Falar no WhatsApp", 213, 562, { size: 26, weight: 700, color: INK, align: "center" });
-  g.text(`CNPJ ${company.cnpj}`, 48, PH - 60, { font: "mono", size: 18, weight: 500, color: FOG });
-  g.rr(PW - 156, PH - 112, 120, 80, 6, "#FFFFFF", null);
-  barcode(g, PW - 146, PH - 102, 100, 46, INK);
-  g.text("Nº 01", PW - 96, PH - 52, { font: "mono", size: 14, weight: 700, color: INK, align: "center" });
+  g.text("Engenharia on-demand para o seu modelo de negócio.", 48, 210, {
+    font: "editorial",
+    size: 60,
+    weight: 600,
+    color: "#FFFFFF",
+    tracking: -1.5,
+    lineHeight: 62,
+    maxWidth: 500,
+  });
+  g.text("A conversa é direto com quem escreve o código.", 48, 480, { size: 27, weight: 500, color: FOG, maxWidth: 460, lineHeight: 36 });
+  g.rr(48, 570, 300, 68, 34, ACCENT.brand, null);
+  g.text("Falar com a engenharia", 198, 591, { size: 24, weight: 700, color: INK, align: "center" });
+  g.text(company.legalName, 48, PH - 84, { font: "mono", size: 14, weight: 500, color: FOG });
+  g.text(`CNPJ ${company.cnpj}`, 48, PH - 60, { font: "mono", size: 16, weight: 500, color: FOG });
+  g.rr(PW - 150, PH - 96, 112, 70, 6, "#FFFFFF", null);
+  barcode(g, PW - 141, PH - 88, 94, 40, INK);
+  g.text("Nº 01", PW - 94, PH - 44, { font: "mono", size: 13, weight: 700, color: INK, align: "center" });
 };
 
 /** Frente e verso de cada folha, da capa à contracapa. */
 export const MAGAZINE_PAGES: Painter[] = [
   paintCover,
   productPage({
-    name: dpprinter.name,
-    line: "Etiquetas direto do navegador, sem driver e sem fila.",
-    points: ["USB nativa e rede", "Auditoria de cada impressão", "Atualiza sozinho"],
-    accent: "#10B981",
+    name: "DP Printer",
+    kicker: "Middleware de impressão",
+    line: "Do sistema web para a impressora de etiquetas, sem driver.",
+    stat: { value: "7.000+", label: "laboratórios Hermes Pardini" },
+    points: ["Compatível com Zebra Browser Print", "USB Raw, rede ou driver", "Registro de cada etiqueta"],
+    accent: ACCENT.dp,
     dark: true,
     page: 2,
   }),
-  photoPage(IMAGES.dpprinter, "Do sistema web direto para a impressora térmica.", "#10B981", 3, "DP Printer"),
+  photoPage(IMAGES.dpprinter, "A etiqueta sai na hora, e a impressão fica registrada.", ACCENT.dp, 3, "DP Printer"),
   productPage({
-    name: estoquento.name,
-    line: "O estoque inteiro em um painel, com o armazém em 3D.",
-    points: ["Entrada e prateleira", "Postagem e rastreio", "9 integrações"],
-    accent: "#F26A1B",
+    name: "EstoqueNTO",
+    kicker: "Gestão de parque",
+    line: "Cada impressora do parque, do recebimento ao laboratório.",
+    points: ["Patrimônio SELB e número de série", "Postagem ViPP e rastreio", "Termo de comodato no DocuSign", "Aviso pelo WhatsApp oficial"],
+    accent: ACCENT.nto,
     dark: false,
     page: 4,
   }),
-  photoPage(IMAGES.warehouse, "Cada corredor e cada caixa, acompanhados em tempo real.", "#F26A1B", 5, "EstoqueNTO"),
+  photoPage(IMAGES.warehouse, "Prateleira, envio e comodato no mesmo painel.", ACCENT.nto, 5, "EstoqueNTO"),
   productPage({
-    name: credencial.name,
-    line: "Crachás corporativos, do layout à impressora.",
-    points: ["Editor de crachás", "Formato CR80", "Impressoras PVC"],
-    accent: "#9B7BFF",
+    name: "Credencial Studio",
+    kicker: "Estúdio de crachás",
+    line: "Crachás CR80 em frente e verso na Zebra ZC300.",
+    points: ["Importa a base do Access", "Lote colado do Excel", "Foto vinculada pelo número", "Prévia antes de imprimir"],
+    accent: ACCENT.cred,
     dark: true,
     page: 6,
   }),
-  photoPage(IMAGES.credencial, "Cartão PVC impresso direto do desktop.", "#9B7BFF", 7, "Credencial Studio"),
+  photoPage(IMAGES.credencial, "Da planilha ao cartão impresso, sem retrabalho.", ACCENT.cred, 7, "Credencial Studio"),
   paintBack,
 ];

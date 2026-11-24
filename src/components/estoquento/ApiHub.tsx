@@ -1,6 +1,6 @@
 "use client";
 
-import { estoquento } from "@/content/site";
+import { estoquentoHub } from "@/content/site";
 import { useNow } from "@/lib/useNow";
 import { useDemo } from "@/store/useDemo";
 
@@ -13,21 +13,21 @@ export function ApiHub() {
   const selected = useDemo((s) => s.selected);
   const running = Object.values(pings).some((p) => !p.done);
   const now = useNow(running);
-  const item = estoquento.integrations[selected];
+  const item = estoquentoHub.integrations[selected];
 
   return (
     <div className="flex min-h-0 flex-col rounded-3xl border border-rule bg-stock p-4 sm:p-5 lg:h-full">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-xl font-bold">{estoquento.hubTitle}</h3>
+          <h3 className="text-xl font-bold">{estoquentoHub.title}</h3>
           <p className="mt-0.5 flex items-center gap-2 text-sm text-slate">
             <span className="size-2 rounded-full bg-dp" />
-            {estoquento.hubStatus}
+            {estoquentoHub.status}
           </p>
         </div>
         <div className="text-right">
           <div className="text-xs text-slate">Tempo médio</div>
-          <div className="tabular font-mono text-xl font-semibold">{estoquento.hubAverage} ms</div>
+          <div className="tabular font-mono text-xl font-semibold">{estoquentoHub.average} ms</div>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export function ApiHub() {
       </button>
 
       <ul className="mt-2 divide-y divide-rule lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-        {estoquento.integrations.map((integration, i) => {
+        {estoquentoHub.integrations.map((integration, i) => {
           const ping = pings[i];
           const active = ping !== undefined && !ping.done;
           const elapsed = active ? Math.min(integration.ms, Math.max(0, now - ping.start)) : 0;

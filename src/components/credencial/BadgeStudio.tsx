@@ -1,7 +1,7 @@
 "use client";
 
-import { View } from "@react-three/drei";
-import { credencial } from "@/content/site";
+import { Canvas } from "@react-three/fiber";
+import { credencialDemo } from "@/content/site";
 import { useDemo } from "@/store/useDemo";
 import { BadgeScene } from "@/three/BadgeScene";
 
@@ -45,10 +45,10 @@ export function BadgeEditor() {
   const demo = useDemo();
   return (
     <form
-      className="rounded-3xl border border-rule-dark bg-graphite p-5 lg:p-[clamp(1rem,2.6vh,1.5rem)]"
+      className="flex flex-col rounded-3xl border border-rule-dark bg-graphite p-5 lg:p-[clamp(1rem,2.6vh,1.5rem)]"
       onSubmit={(e) => e.preventDefault()}
     >
-      <h3 className="text-lg font-bold text-white">Monte um crachá</h3>
+      <h3 className="text-lg font-bold text-white">Monte um crachá como no Credencial Studio</h3>
       <div className="mt-[clamp(0.6rem,1.8vh,1rem)] grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium text-fog">Nome no crachá</span>
@@ -74,8 +74,17 @@ export function BadgeEditor() {
         </label>
       </div>
       <div className="mt-[clamp(0.6rem,1.8vh,1rem)] space-y-[clamp(0.6rem,1.8vh,1rem)]">
-        <Choice legend="Nível de acesso" options={credencial.access} value={demo.access} onChange={demo.setAccess} />
-        <Choice legend="Acabamento" options={credencial.finishes} value={demo.finish} onChange={demo.setFinish} />
+        <Choice legend="Função (cor da faixa)" options={credencialDemo.functions.map((f) => f.label)} value={demo.fn} onChange={demo.setFn} />
+        <Choice legend="Acabamento" options={credencialDemo.finishes} value={demo.finish} onChange={demo.setFinish} />
+      </div>
+      <div className="mt-6 border-t border-rule-dark pt-4 lg:mt-auto">
+        <p className="text-sm font-medium text-fog">No aplicativo de verdade</p>
+        <ul className="mt-2 space-y-1.5 text-[15px] leading-snug text-[#C9D0DA]">
+          <li>Importa a base do Access e acha a foto pelo número do crachá.</li>
+          <li>Cola linhas do Excel e imprime o lote inteiro de uma vez.</li>
+          <li>Mostra frente e verso antes de mandar para a Zebra ZC300.</li>
+          <li>Vários computadores usam a mesma pasta de rede, sem gravar um por cima do outro.</li>
+        </ul>
       </div>
     </form>
   );
@@ -85,10 +94,12 @@ export function BadgeStage() {
   const flipped = useDemo((s) => s.flipped);
   const flip = useDemo((s) => s.flip);
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl bg-[radial-gradient(120%_90%_at_50%_30%,#2a2350_0%,#0e1116_70%)]">
-      <View className="h-[420px] w-full touch-pan-y sm:h-[500px] lg:h-auto lg:min-h-0 lg:flex-1">
-        <BadgeScene />
-      </View>
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-3xl bg-[radial-gradient(120%_90%_at_50%_30%,#13285a_0%,#0e1116_70%)]">
+      <div className="h-[380px] w-full touch-pan-y sm:h-[460px] lg:h-auto lg:min-h-0 lg:flex-1">
+        <Canvas dpr={[1, 1.75]} gl={{ antialias: true, alpha: true }}>
+          <BadgeScene />
+        </Canvas>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
         <span className="text-sm text-fog">Passe o mouse para inclinar o cartão.</span>
         <button

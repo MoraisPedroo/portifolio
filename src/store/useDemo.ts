@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { credencial, dpprinter, estoquento } from "@/content/site";
+import { credencialDemo, dpprinterDemo, estoquentoHub } from "@/content/site";
 
 export const PRINT_MS = 1500;
-export const AISLES = 4;
 
 export type PrintEvent = {
   id: string;
@@ -30,46 +29,47 @@ type DemoState = {
   // EstoqueNTO
   pings: Record<number, Ping>;
   selected: number;
-  hoverAisle: number | null;
-  aisle: number | null;
-  pulse: { aisle: number; at: number } | null;
   ping: (index: number) => void;
   pingAll: () => void;
-  select: (index: number) => void;
-  setHoverAisle: (aisle: number | null) => void;
-  toggleAisle: (aisle: number) => void;
   // Credencial Studio
   name: string;
   role: string;
-  access: number;
+  fn: number;
   finish: number;
   flipped: boolean;
   setField: (key: "name" | "role", value: string) => void;
-  setAccess: (access: number) => void;
+  setFn: (fn: number) => void;
   setFinish: (finish: number) => void;
   flip: () => void;
 };
 
 const now = () => performance.now();
 
+/**
+ * Mesmo formato do evento que o DP Printer grava em inventario/{lc}/{serial}
+ * depois de cada impressão. Os valores são de demonstração.
+ */
 function buildEvent(state: DemoState, count: number): PrintEvent {
-  const lab = dpprinter.sim.labs[state.lab];
-  const operator = dpprinter.sim.operators[state.operator];
-  const station = dpprinter.sim.stations[state.station];
+  const lab = dpprinterDemo.labs[state.lab];
+  const operator = dpprinterDemo.operators[state.operator];
+  const station = dpprinterDemo.stations[state.station];
   const date = new Date();
+  const serial = "DEMO" + String(48210 + state.lab * 7).padStart(8, "0");
   const payload = {
-    event: "PRINT_DISPATCH_RAW_USB",
-    status: "SPOOLER_BYPASSED_OK",
-    lab_id: lab,
-    operator,
-    station_pc: station,
-    serial_device: "DEMO-USB-" + String(4800 + count).padStart(6, "0"),
-    registro: "AUD-" + date.getFullYear() + "-" + String(88400 + count),
-    timestamp: date.toISOString(),
-    firebase_sync_ms: 17,
+    caminho: `inventario/${lab.replace("LC ", "")}/${serial}`,
+    lc: lab.replace("LC ", ""),
+    serial,
+    impressora: "ZDesigner ZD230 (USB Raw)",
+    computador: station,
+    usuario: operator,
+    cidade: "São Paulo",
+    uf: "SP",
+    versao_app: "4.0",
+    contador: 1200 + count,
+    data_hora: date.toISOString().slice(0, 19).replace("T", " "),
   };
   return {
-    id: payload.registro,
+    id: `${lab} · ${serial}`,
     lab,
     operator,
     station,
@@ -110,25 +110,16 @@ export const useDemo = create<DemoState>((set, get) => ({
 
   pings: {},
   selected: 8,
-  hoverAisle: null,
-  aisle: null,
-  pulse: null,
   ping: (index) => {
     const current = get().pings[index];
     if (current && !current.done) return;
-    set({
-      selected: index,
-      pings: { ...get().pings, [index]: { start: now(), done: false } },
-    });
+    set({ selected: index, pings: { ...get().pings, [index]: { start: now(), done: false } } });
     setTimeout(() => {
-      set({
-        pings: { ...get().pings, [index]: { start: get().pings[index].start, done: true } },
-        pulse: { aisle: index % AISLES, at: now() },
-      });
-    }, estoquento.integrations[index].ms);
+      set({ pings: { ...get().pings, [index]: { start: get().pings[index].start, done: true } } });
+    }, estoquentoHub.integrations[index].ms);
   },
   pingAll: () => {
-    estoquento.integrations.forEach((_, index) => {
+    estoquentoHub.integrations.forEach((_, index) => {
       setTimeout(() => {
         const selected = get().selected;
         get().ping(index);
@@ -136,20 +127,14 @@ export const useDemo = create<DemoState>((set, get) => ({
       }, index * 90);
     });
   },
-  select: (index) => set({ selected: index }),
-  setHoverAisle: (hoverAisle) => {
-    if (get().hoverAisle !== hoverAisle) set({ hoverAisle });
-  },
-  toggleAisle: (aisle) => set({ aisle: get().aisle === aisle ? null : aisle }),
 
-  name: credencial.sample.name,
-  role: credencial.sample.role,
-  access: 0,
+  name: credencialDemo.sample.name,
+  role: credencialDemo.sample.role,
+  fn: 0,
   finish: 0,
   flipped: false,
-  setField: (key, value) =>
-    set({ [key]: value.slice(0, key === "name" ? 22 : 28) } as Pick<DemoState, typeof key>),
-  setAccess: (access) => set({ access }),
+  setField: (key, value) => set({ [key]: value.slice(0, key === "name" ? 22 : 28) } as Pick<DemoState, typeof key>),
+  setFn: (fn) => set({ fn }),
   setFinish: (finish) => set({ finish }),
   flip: () => set({ flipped: !get().flipped }),
 }));
