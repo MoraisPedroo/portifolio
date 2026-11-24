@@ -109,6 +109,11 @@ export function PrintSimulator() {
               );
             })}
           </ol>
+          {!busy && demo.printCount > 0 && (
+            <p className="mt-2 text-[13px] text-cyan-300" role="status">
+              Etiqueta simulada enviada para 127.0.0.1:9100 e registrada no inventário.
+            </p>
+          )}
         </div>
 
         {/* Impressora e etiqueta */}
@@ -153,7 +158,7 @@ export function PrintSimulator() {
             <JsonView json={last.json} />
           ) : (
             <span className="whitespace-pre-wrap text-fog/70">
-              O evento que o DP Printer grava no inventário aparece aqui depois da primeira impressão.
+              Clique em “Imprimir etiqueta de teste” para ver o registro que o DP Printer grava no inventário.
             </span>
           )}
         </pre>

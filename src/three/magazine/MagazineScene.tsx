@@ -20,6 +20,9 @@ const HALF_TAN = Math.tan(MathUtils.degToRad(FOV / 2));
 /** Ponteiro limitado ao palco: fora dele a revista não gira nem desliza demais. */
 const px = (v: number) => MathUtils.clamp(v, -1, 1);
 
+/** Palco em retrato (celular): mostra uma página por vez em vez do spread espremido. */
+const NARROW = 1.15;
+
 /** Enquadra a capa fechada ou a revista aberta, conforme a proporção do palco. */
 function Rig({ open }: { open: boolean }) {
   const camera = useRef<Camera>(null);
@@ -27,7 +30,7 @@ function Rig({ open }: { open: boolean }) {
   useFrame((state, delta) => {
     if (!camera.current) return;
     const aspect = state.size.width / Math.max(1, state.size.height);
-    const width = open ? PAGE_WIDTH * 2 : PAGE_WIDTH;
+    const width = open && aspect >= NARROW ? PAGE_WIDTH * 2 : PAGE_WIDTH;
     const fit = Math.max((PAGE_HEIGHT * 1.16) / (2 * HALF_TAN), (width * 1.1) / (2 * HALF_TAN * aspect));
     easing.damp(distance, "current", fit, 0.35, delta);
     camera.current.position.set(px(state.pointer.x) * 0.12, 0.05 + px(state.pointer.y) * 0.08, distance.current);
@@ -95,7 +98,9 @@ export function MagazineScene({ fixedPage, onFlip }: Props) {
     });
     if (!root.current) return;
     // Fechada, a revista fica centralizada na capa ou na contracapa.
-    const x = shown === 0 ? -PAGE_WIDTH / 2 : shown === MAG_LAST ? PAGE_WIDTH / 2 : 0;
+    const narrow = state.size.width / Math.max(1, state.size.height) < NARROW;
+    // No retrato, a revista aberta desliza para mostrar só a página da direita (a foto).
+    const x = shown === 0 || (narrow && shown < MAG_LAST) ? -PAGE_WIDTH / 2 : shown === MAG_LAST ? PAGE_WIDTH / 2 : 0;
     easing.damp(root.current.position, "x", x, 0.35, delta);
     easing.dampE(root.current.rotation, [-0.22 - px(state.pointer.y) * 0.05, -0.08 + px(state.pointer.x) * 0.1, 0], 0.5, delta);
     if (rim.current) easing.dampC(rim.current.color, ACCENTS[shown] ?? ACCENTS[0], 0.6, delta);

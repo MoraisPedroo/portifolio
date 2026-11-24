@@ -11,28 +11,40 @@ const ACCENT: Record<string, { dot: string; text: string; ring: string }> = {
 };
 
 const BUTTON =
-  "inline-flex min-h-11 items-center justify-center rounded-full px-5 text-[15px] font-semibold transition-colors";
+  "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full px-5 text-[15px] font-semibold transition-colors";
+const PRIMARY = `${BUTTON} bg-white text-ink hover:bg-brass`;
+const SECONDARY = `${BUTTON} border border-white/20 hover:border-white/50`;
+const TITLE = "editorial mt-2 text-[clamp(1.5rem,3.4vh,2.05rem)] leading-[1.12]";
+const BODY = "mt-3 text-[clamp(0.93rem,1.9vh,1rem)] leading-[1.6] text-[#D1D5DB]";
 
-/** Painel legível e clicável que acompanha a página aberta da revista. */
+function Badge({ dot, text, children }: { dot: string; text: string; children: React.ReactNode }) {
+  return (
+    <p className={`flex items-center gap-2 text-sm font-semibold ${text}`}>
+      <span className={`size-2 rounded-full ${dot}`} />
+      {children}
+    </p>
+  );
+}
+
+/** Painel em HTML que acompanha a página aberta: é aqui que ficam o texto e os botões. */
 export function ProjectHUD({ page, onDemo }: { page: number; onDemo: () => void }) {
   const product = products.find((p) => p.page === page);
 
   return (
     <div
       key={page}
-      className="hud-in rounded-3xl border border-white/12 bg-[rgba(11,13,16,0.84)] p-5 text-white shadow-2xl short:p-4 shadow-black/40 backdrop-blur-[18px] sm:p-6"
+      className="hud-in rounded-3xl border border-white/12 bg-[rgba(19,23,29,0.9)] p-5 text-white shadow-2xl shadow-black/40 backdrop-blur-[18px] sm:p-6 short:p-4"
       aria-live="polite"
     >
       {product ? (
         <>
-          <p className={`flex items-center gap-2 text-sm font-semibold ${ACCENT[product.id].text}`}>
-            <span className={`size-2 rounded-full ${ACCENT[product.id].dot}`} />
+          <Badge dot={ACCENT[product.id].dot} text={ACCENT[product.id].text}>
             {product.badge}
-          </p>
-          <h2 className="mt-3 text-sm font-bold uppercase tracking-[0.08em] text-fog">{product.name}</h2>
-          <p className="editorial mt-1 text-[clamp(1.5rem,3.4vh,2rem)]">{product.title}</p>
-          <p className="mt-3 text-[clamp(0.92rem,1.9vh,1rem)] leading-relaxed text-[#C9D0DA]">{product.summary}</p>
-          <ul className="mt-4 flex flex-wrap gap-1.5 short:hidden" aria-label="Integrações e tecnologia">
+          </Badge>
+          <h2 className="mt-3 text-[13px] font-bold uppercase tracking-[0.1em] text-fog">{product.name}</h2>
+          <p className={TITLE}>{product.title}</p>
+          <p className={BODY}>{product.summary}</p>
+          <ul className="mt-4 flex flex-wrap gap-1.5 short:hidden" aria-label="Tecnologia e integrações">
             {product.tags.map((tag) => (
               <li key={tag} className={`rounded-full border ${ACCENT[product.id].ring} px-2.5 py-1 font-mono text-[12px] text-[#DDE3EA]`}>
                 {tag}
@@ -40,47 +52,46 @@ export function ProjectHUD({ page, onDemo }: { page: number; onDemo: () => void 
             ))}
           </ul>
           <div className="mt-5 flex flex-wrap gap-2 short:mt-4">
-            <button type="button" onClick={onDemo} className={`${BUTTON} bg-white text-ink hover:bg-brass`}>
-              Ver demonstração
+            <button type="button" onClick={onDemo} className={PRIMARY}>
+              {product.demoLabel}
             </button>
             {product.url ? (
-              <a href={product.url} target="_blank" rel="noopener noreferrer" className={`${BUTTON} border border-white/20 hover:border-white/50`}>
-                Acessar {product.urlLabel}
+              <a href={product.url} target="_blank" rel="noopener noreferrer" className={SECONDARY}>
+                {product.urlLabel}
+                <span aria-hidden>↗</span>
               </a>
             ) : (
-              <Link href={`/contato?assunto=${product.subject}`} className={`${BUTTON} border border-white/20 hover:border-white/50`}>
-                Pedir demonstração
+              <Link href={`/contato?assunto=${product.subject}`} className={SECONDARY}>
+                {product.demoFooter.action}
               </Link>
             )}
           </div>
         </>
       ) : page === 0 ? (
         <>
-          <p className="flex items-center gap-2 text-sm font-semibold text-brass">
-            <span className="size-2 rounded-full bg-brass" />
+          <Badge dot="bg-brass" text="text-brass">
             {cover.badge}
-          </p>
-          <p className="editorial mt-3 text-[clamp(1.6rem,3.6vh,2.2rem)]">{cover.title}</p>
-          <p className="mt-3 text-[clamp(0.92rem,1.9vh,1rem)] leading-relaxed text-[#C9D0DA]">{cover.summary}</p>
-          <div className="mt-5 flex flex-wrap gap-2 short:mt-4">
-            <button type="button" onClick={() => useMagazine.getState().setPage(1)} className={`${BUTTON} bg-white text-ink hover:bg-brass`}>
-              Abrir no DP Printer
+          </Badge>
+          <p className={TITLE}>{cover.title}</p>
+          <p className={BODY}>{cover.summary}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <button type="button" onClick={() => useMagazine.getState().setPage(1)} className={PRIMARY}>
+              {cover.action}
             </button>
           </div>
         </>
       ) : (
         <>
-          <p className="flex items-center gap-2 text-sm font-semibold text-brass">
-            <span className="size-2 rounded-full bg-brass" />
+          <Badge dot="bg-brass" text="text-brass">
             {backCover.badge}
-          </p>
-          <p className="editorial mt-3 text-[clamp(1.6rem,3.6vh,2.2rem)]">{backCover.title}</p>
-          <p className="mt-3 text-[clamp(0.92rem,1.9vh,1rem)] leading-relaxed text-[#C9D0DA]">{backCover.summary}</p>
-          <div className="mt-5 flex flex-wrap gap-2 short:mt-4">
+          </Badge>
+          <p className={TITLE}>{backCover.title}</p>
+          <p className={BODY}>{backCover.summary}</p>
+          <div className="mt-5 flex flex-wrap gap-2">
             <Link href="/contato" className={`${BUTTON} bg-dp text-ink hover:bg-emerald-400`}>
               Falar com a engenharia
             </Link>
-            <button type="button" onClick={() => useMagazine.getState().setPage(0)} className={`${BUTTON} border border-white/20 hover:border-white/50`}>
+            <button type="button" onClick={() => useMagazine.getState().setPage(0)} className={SECONDARY}>
               Voltar para a capa
             </button>
           </div>

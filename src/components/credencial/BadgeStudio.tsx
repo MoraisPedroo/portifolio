@@ -48,7 +48,23 @@ export function BadgeEditor() {
       className="flex flex-col rounded-3xl border border-rule-dark bg-graphite p-5 lg:p-[clamp(1rem,2.6vh,1.5rem)]"
       onSubmit={(e) => e.preventDefault()}
     >
-      <h3 className="text-lg font-bold text-white">Monte um crachá como no Credencial Studio</h3>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-lg font-bold text-white">Monte um crachá como no Credencial Studio</h3>
+        <button
+          type="button"
+          onClick={() => {
+            const batch = credencialDemo.batch;
+            const current = batch.findIndex((row) => row.name === demo.name);
+            const row = batch[(current + 1) % batch.length];
+            demo.setField("name", row.name);
+            demo.setField("role", row.role);
+            demo.setFn(row.fn);
+          }}
+          className="rounded-full border border-rule-dark px-3 py-1.5 text-sm font-medium text-white transition-colors hover:border-fog"
+        >
+          Próxima linha do lote (Excel)
+        </button>
+      </div>
       <div className="mt-[clamp(0.6rem,1.8vh,1rem)] grid gap-3 sm:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium text-fog">Nome no crachá</span>

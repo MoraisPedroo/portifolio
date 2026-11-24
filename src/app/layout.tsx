@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Header } from "@/components/Header";
-import { company } from "@/content/site";
+import { company, products } from "@/content/site";
 import { editorialFont, monoFont, sansFont } from "@/lib/fonts";
 import { ClientCanvas } from "@/three/ClientCanvas";
 import "./globals.css";
 
-const description = `${company.manifesto} ${company.manifestoSub} Middleware de impressão, gestão de parque de impressoras e crachás CR80, em produção.`;
+const description =
+  "Engenharia de software sob medida em São Paulo. DP Printer (impressão térmica do navegador, 7.000+ laboratórios), EstoqueNTO e Credencial Studio em produção.";
+
+const SITE = "https://www.dpsystemsbrasil.com.br";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
+  
   title: { default: "DP Systems — Engenharia de software sob medida", template: "%s · DP Systems" },
   description,
   openGraph: {
@@ -15,7 +20,9 @@ export const metadata: Metadata = {
     description,
     locale: "pt_BR",
     type: "website",
+    siteName: "DP Systems",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {
@@ -24,12 +31,35 @@ export const viewport: Viewport = {
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  name: company.name,
-  legalName: company.legalName,
-  taxID: company.cnpj,
-  address: { "@type": "PostalAddress", addressLocality: "São Paulo", addressRegion: "SP", addressCountry: "BR" },
-  url: "https://www.dpsystemsbrasil.com.br/",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE}/#org`,
+      name: company.name,
+      legalName: company.legalName,
+      taxID: company.cnpj,
+      url: `${SITE}/`,
+      logo: `${SITE}/images/logo-mark.png`,
+      founder: company.partners.map((p) => ({ "@type": "Person", name: p.fullName })),
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "São Paulo",
+        addressRegion: "SP",
+        addressCountry: "BR",
+        streetAddress: "Pinheiros",
+      },
+      contactPoint: { "@type": "ContactPoint", contactType: "sales", telephone: `+${company.whatsappNumber}`, availableLanguage: "pt-BR" },
+    },
+    ...products.map((product) => ({
+      "@type": "SoftwareApplication",
+      name: product.name,
+      description: product.summary,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: product.id === "estoquento" ? "Web" : "Windows",
+      ...(product.url ? { url: product.url } : {}),
+      publisher: { "@id": `${SITE}/#org` },
+    })),
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

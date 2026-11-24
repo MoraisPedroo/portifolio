@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { products } from "@/content/site";
 import { BadgeEditor, BadgeStage } from "../credencial/BadgeStudio";
@@ -32,7 +33,7 @@ function Content({ id }: { id: ProductId }) {
             Sala de estoque em 3D do EstoqueNTO, com dados de demonstração. Arraste para girar e clique numa prateleira.
           </p>
         </div>
-        <div className="text-ink lg:min-h-0">
+        <div className="lg:min-h-0">
           <ApiHub />
         </div>
       </div>
@@ -90,6 +91,16 @@ export function DemoDialog({ id, onClose }: { id: ProductId | null; onClose: () 
           </div>
           <div className="min-h-0 overflow-y-auto p-4 sm:p-6">
             <Content id={product.id} />
+          </div>
+          {/* Quem acabou de testar está no ponto certo para conversar. */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 bg-white/[0.03] px-5 py-3 sm:px-6">
+            <p className="text-[15px] text-[#D1D5DB]">{product.demoFooter.question}</p>
+            <Link
+              href={`/contato?assunto=${product.subject}`}
+              className="inline-flex min-h-10 items-center rounded-full bg-dp px-4 text-[15px] font-bold text-ink transition-colors hover:bg-emerald-400"
+            >
+              {product.demoFooter.action} →
+            </Link>
           </div>
         </div>
       )}

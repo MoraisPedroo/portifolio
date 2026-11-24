@@ -19,10 +19,12 @@ export const company = {
   cnpj: "65.147.732/0001-54",
   location: "Pinheiros, São Paulo - SP",
   founded: "2026",
-  manifesto: "Transformamos desafios complexos em software exclusivo.",
-  manifestoSub: "Engenharia on-demand para impulsionar qualquer modelo de negócio.",
+  kicker: "Engenharia sob medida · Pinheiros, São Paulo",
+  manifesto: "Software sob medida para o que trava sua operação.",
   lead:
-    "Escrevemos o software que falta entre o seu sistema e a operação: a impressora que precisa receber a etiqueta do navegador, o estoque que precisa falar com os Correios, o crachá que precisa sair da base antiga. Da arquitetura ao deploy, com quem vai usar no dia a dia.",
+    "Construímos o elo entre o seu sistema e o chão da operação: impressão direta do navegador na térmica, controle de estoque com integrações reais e migração segura de bases antigas.",
+  /** Faixa de prova logo abaixo dos botões da primeira tela. */
+  proof: ["7.000+ laboratórios com o DP Printer", "2 sócios escrevendo o código", "Da arquitetura ao deploy"],
   whatsappNumber: "5531971828478",
   whatsappDisplay: "+55 31 97182-8478",
   /** Preencher com o e-mail oficial; sem e-mail o cartão e o envio por e-mail ficam ocultos. */
@@ -44,6 +46,13 @@ export const company = {
     },
   ] satisfies Partner[],
 };
+
+/** Como uma conversa vira projeto. */
+export const steps = [
+  { title: "Conversa técnica direta", text: "Você explica o gargalo para o Pedro e o Diego, sem intermediário comercial." },
+  { title: "Escopo e prazo claros", text: "Devolvemos o desenho da solução, as integrações envolvidas e um cronograma objetivo." },
+  { title: "Deploy acompanhado", text: "Entregamos em produção junto com a equipe que vai operar no dia a dia." },
+];
 
 export type Subject = "sob-medida" | "dpprinter" | "estoquento" | "credencial" | "outro";
 
@@ -69,19 +78,23 @@ export const nav = [
 export const practices = [
   {
     title: "Hardware falando com o navegador",
-    text: "Seu sistema web imprime direto na Zebra, pela USB ou pela rede, sem driver nem Browser Print. É o que o DP Printer faz escutando em 127.0.0.1:9100.",
+    text: "Seu sistema web imprime direto na Zebra por USB Raw, TCP/IP ou driver, sem instalar o Zebra Browser Print em cada estação.",
+    shift: "Antes: driver travando no balcão. Depois: etiqueta saindo do navegador.",
   },
   {
-    title: "Integrações que eliminam digitação",
-    text: "Correios ViPP, rastreio, DocuSign, WhatsApp oficial, consulta de CNPJ e CEP e Microsoft 365 ligados no mesmo fluxo do EstoqueNTO.",
+    title: "Integrações que eliminam redigitação",
+    text: "Correios ViPP, rastreio, DocuSign, WhatsApp oficial via Twilio, consulta de CNPJ e CEP e Microsoft 365 no mesmo fluxo.",
+    shift: "Antes: cinco sistemas abertos. Depois: um painel.",
   },
   {
     title: "Saída de sistemas antigos",
-    text: "O Credencial Studio importou a base do Access e as artes dos crachás antigos, com backup antes de cada gravação e nenhum registro perdido.",
+    text: "Bases em Access e planilhas viram aplicativos em rede, com validação dos dados e controle de revisão.",
+    shift: "Antes: um computador com o arquivo. Depois: a equipe inteira na mesma base.",
   },
   {
-    title: "Operação rastreável",
-    text: "Cada etiqueta vira um registro com laboratório, serial, estação e usuário. Cada equipamento tem histórico do recebimento ao envio.",
+    title: "Operação rastreável ponta a ponta",
+    text: "Cada etiqueta gera registro de laboratório, serial, estação e usuário. Cada equipamento tem histórico do recebimento ao envio.",
+    shift: "Antes: quem imprimiu? Depois: está no inventário.",
   },
 ];
 
@@ -97,6 +110,12 @@ export type Product = {
   url: string | null;
   urlLabel: string | null;
   subject: Subject;
+  /** Linha curta do índice da Apresentação. */
+  line: string;
+  /** Botão que abre a demonstração. */
+  demoLabel: string;
+  /** Rodapé da demonstração, que leva ao contato com o assunto certo. */
+  demoFooter: { question: string; action: string };
 };
 
 export const products: Product[] = [
@@ -104,40 +123,49 @@ export const products: Product[] = [
     id: "dpprinter",
     name: "DP Printer",
     page: 1,
-    badge: "Mais de 7.000 laboratórios Hermes Pardini",
-    title: "Do sistema web para a impressora de etiquetas, sem driver.",
+    badge: "Em produção · 7.000+ laboratórios Hermes Pardini",
+    title: "Impressão térmica do navegador direto na impressora.",
     summary:
-      "Aplicativo de bandeja para Windows que recebe a impressão do navegador em 127.0.0.1:9100, no mesmo protocolo do Zebra Browser Print, e manda o comando bruto para a impressora por USB, rede ou driver. Cada etiqueta gera um registro com laboratório, serial da impressora, estação, usuário e cidade.",
-    tags: ["USB Raw", "Rede TCP/IP", "Compatível com Browser Print", "Proxy GTI", "Firebase", "Windows 7 ou superior"],
+      "Aplicativo de bandeja para Windows (7 SP1 ou superior) que recebe comandos em 127.0.0.1:9100 no protocolo do Zebra Browser Print e envia direto por USB Raw, TCP/IP ou driver. Inclui proxy GTI, descoberta na rede, atualização automática e registro de cada impressão no inventário.",
+    tags: ["USB Raw e TCP/IP", "Protocolo Browser Print", "Proxy GTI", "Windows 7+"],
     url: "https://dpprinter.com.br/",
-    urlLabel: "dpprinter.com.br",
+    urlLabel: "Abrir dpprinter.com.br",
     subject: "dpprinter",
+    line: "Impressão térmica do navegador direto na Zebra, em mais de 7.000 laboratórios.",
+    demoLabel: "Testar simulador de impressão",
+    demoFooter: { question: "Precisa imprimir do navegador direto na térmica?", action: "Falar sobre impressão" },
   },
   {
     id: "estoquento",
     name: "EstoqueNTO",
     page: 2,
-    badge: "Parque de impressoras em comodato",
-    title: "Cada impressora do parque, do recebimento ao laboratório.",
+    badge: "Sistema web · Parque em comodato",
+    title: "O parque de impressoras inteiro em um painel.",
     summary:
-      "Controla os equipamentos pelo patrimônio SELB e pelo número de série: entrada, vaga na prateleira (em 2D ou na sala 3D), envio com postagem ViPP dos Correios e rastreio, termo de comodato assinado no DocuSign e aviso ao laboratório pelo WhatsApp oficial. O mapa do parque lê a telemetria do DP Printer.",
-    tags: ["Correios ViPP", "Rastreio", "DocuSign", "WhatsApp oficial", "Microsoft 365", "Firebase"],
+      "Cada equipamento entra pelo patrimônio e número de série, ganha vaga na prateleira (em 2D ou na sala 3D) e sai com postagem ViPP dos Correios e rastreio. Termo de comodato e laudo no DocuSign, aviso pelo WhatsApp oficial, CNPJ e CEP preenchidos sozinhos, planilha no Microsoft 365 e mapa com a telemetria do DP Printer.",
+    tags: ["Correios ViPP", "DocuSign", "WhatsApp via Twilio", "Microsoft 365"],
     url: "https://estoquento.vercel.app/",
-    urlLabel: "estoquento.vercel.app",
+    urlLabel: "Abrir o sistema",
     subject: "estoquento",
+    line: "Parque de impressoras em comodato, da prateleira 3D ao termo no DocuSign.",
+    demoLabel: "Explorar sala 3D e integrações",
+    demoFooter: { question: "Precisa integrar estoque, Correios ou assinatura digital?", action: "Falar sobre integrações" },
   },
   {
     id: "credencial",
     name: "Credencial Studio",
     page: 3,
-    badge: "Windows · Zebra ZC300",
-    title: "Crachás CR80 em frente e verso, da planilha à impressora.",
+    badge: "Desktop Windows · C# / .NET 10",
+    title: "Crachás CR80 frente e verso, da planilha à Zebra ZC300.",
     summary:
-      "Cadastro, edição e impressão de crachás. Importa a base do Access, aceita uma planilha colada do Excel em lote, vincula a foto pelo número do crachá e mostra frente e verso antes de enviar. Vários computadores usam a mesma pasta de rede sem gravar um por cima do outro.",
-    tags: ["C# · .NET 10 · WPF", "CR80 duplex", "Zebra ZC300", "Importação Access e CSV", "Pasta de rede"],
+      "Aplicativo WPF que importou a base antiga do Access, aceita lotes colados do Excel e vincula cada foto pelo número do crachá. Mostra a prévia de frente e verso com a faixa da função e funciona em vários computadores na mesma pasta de rede, com trava e controle de revisão.",
+    tags: ["C# · .NET 10 · WPF", "Zebra ZC300", "Lote do Excel e Access", "Pasta de rede"],
     url: null,
     urlLabel: null,
     subject: "credencial",
+    line: "Crachás CR80 frente e verso na Zebra ZC300, direto do Excel.",
+    demoLabel: "Testar editor de crachá 3D",
+    demoFooter: { question: "Quer ver o aplicativo imprimindo na Zebra ZC300?", action: "Pedir demonstração técnica" },
   },
 ];
 
@@ -152,16 +180,17 @@ export const magazineStates = [
 
 export const cover = {
   badge: "Edição 01",
-  title: "Portfólio de engenharia e produtos",
+  title: "Três sistemas reais rodando em produção.",
   summary:
-    "Três produtos em uso real: o middleware que imprime etiquetas direto do navegador, o sistema que controla o parque de impressoras e o estúdio de crachás que substituiu uma base em Access. Vire as páginas para ver cada um.",
+    "Folheie os projetos para ver a arquitetura, testar as demonstrações no navegador e entender como resolvemos gargalos entre software, hardware e integrações.",
+  action: "Abrir primeiro projeto",
 };
 
 export const backCover = {
   badge: "Contracapa",
-  title: "Engenharia on-demand para o seu modelo de negócio.",
+  title: "Sua operação tem um gargalo parecido?",
   summary:
-    "Se a sua operação depende de uma impressora, de um parceiro com API ou de um sistema antigo que ninguém quer mexer, conte o problema. A conversa é direto com quem escreve o código.",
+    "Se a sua equipe depende de impressora térmica, de integração com parceiros ou de um sistema antigo que ninguém quer manter, conte o cenário. Você fala direto com quem escreve o código.",
 };
 
 /* ---------- Dados das demonstrações (valores fictícios, não são clientes) ---------- */
@@ -208,4 +237,11 @@ export const credencialDemo = {
     { label: "Visitante", band: "#CA352D", fixed: true },
   ],
   finishes: ["Holográfico", "Brilho", "Fosco"],
+  /** Linhas de exemplo, como um lote colado do Excel. */
+  batch: [
+    { name: "Ana Ribeiro", role: "Analista de Laboratório", fn: 0 },
+    { name: "Lucas Andrade", role: "Jovem Aprendiz", fn: 1 },
+    { name: "Marina Costa", role: "Manutenção predial", fn: 2 },
+    { name: "Rafael Lima", role: "Visita técnica", fn: 3 },
+  ],
 };

@@ -3,6 +3,7 @@ import { ProjectsStage } from "@/components/projects/ProjectsStage";
 
 export const metadata: Metadata = {
   title: "Projetos",
+  alternates: { canonical: "/projetos" },
   description:
     "DP Printer, EstoqueNTO e Credencial Studio: middleware de impressão, controle de parque de impressoras e estúdio de crachás, apresentados numa revista 3D.",
 };

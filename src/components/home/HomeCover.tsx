@@ -9,17 +9,11 @@ export function HomeCover() {
   const router = useRouter();
   const open = () => router.push("/projetos");
   return (
-    <div className="relative h-full min-h-0">
-      <View className="h-[400px] w-full touch-pan-y sm:h-[480px] lg:h-full">
+    <div className="relative flex h-full min-h-0 flex-col">
+      <View className="h-[400px] w-full cursor-pointer touch-pan-y sm:h-[480px] lg:h-auto lg:min-h-0 lg:flex-1">
         <MagazineScene fixedPage={0} onFlip={open} />
       </View>
-      <button
-        type="button"
-        onClick={open}
-        className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-rule bg-stock/90 px-4 py-2 text-sm font-semibold text-ink backdrop-blur transition-colors hover:border-ink"
-      >
-        Folhear a revista
-      </button>
+      <p className="mt-1 text-center text-sm text-slate">Clique na capa para folhear</p>
     </div>
   );
 }

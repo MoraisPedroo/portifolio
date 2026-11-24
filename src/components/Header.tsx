@@ -8,25 +8,6 @@ import { armPageSound } from "@/lib/pageSound";
 import { useMagazine } from "@/store/useMagazine";
 import { Logo } from "./Logo";
 
-function SoundButton() {
-  const muted = useMagazine((s) => s.muted);
-  return (
-    <button
-      type="button"
-      onClick={() => useMagazine.getState().toggleMuted()}
-      aria-pressed={!muted}
-      aria-label={muted ? "Ligar o som de virar página" : "Desligar o som de virar página"}
-      title={muted ? "Som desligado" : "Som ligado"}
-      className="grid size-9 place-items-center rounded-full border border-white/15 text-fog transition-colors hover:border-white/40 hover:text-white"
-    >
-      <svg viewBox="0 0 24 24" className="size-[18px]" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M11 5 6 9H3v6h3l5 4V5Z" />
-        {muted ? <path d="m22 9-6 6m0-6 6 6" /> : <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" />}
-      </svg>
-    </button>
-  );
-}
-
 export function Header() {
   const pathname = usePathname();
 
@@ -61,7 +42,7 @@ export function Header() {
             })}
           </ul>
         </nav>
-        <div className="hidden w-[172px] justify-end sm:flex">{pathname.startsWith("/projetos") ? <SoundButton /> : null}</div>
+        <div className="hidden w-[172px] sm:block" aria-hidden />
       </div>
     </header>
   );

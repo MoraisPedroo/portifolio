@@ -20,6 +20,9 @@ type MagazineState = {
   muted: boolean;
   /** Muda a cada interação da pessoa, para reiniciar a virada automática. */
   touchedAt: number;
+  /** Virada automática ligada; para na primeira interação ou no botão de pausa. */
+  playing: boolean;
+  togglePlaying: () => void;
   setPage: (page: number) => void;
   next: () => void;
   prev: () => void;
@@ -33,9 +36,12 @@ export const useMagazine = create<MagazineState>((set, get) => ({
   page: 0,
   muted: false,
   touchedAt: 0,
-  setPage: (page) => set({ page: clamp(page), touchedAt: Date.now() }),
-  next: () => set({ page: get().page >= MAG_LAST ? 0 : get().page + 1, touchedAt: Date.now() }),
-  prev: () => set({ page: get().page <= 0 ? 0 : get().page - 1, touchedAt: Date.now() }),
+  playing: true,
+  togglePlaying: () => set({ playing: !get().playing, touchedAt: Date.now() }),
+  // Quem vira a página por conta própria está lendo: a virada automática para.
+  setPage: (page) => set({ page: clamp(page), touchedAt: Date.now(), playing: false }),
+  next: () => set({ page: get().page >= MAG_LAST ? 0 : get().page + 1, touchedAt: Date.now(), playing: false }),
+  prev: () => set({ page: get().page <= 0 ? 0 : get().page - 1, touchedAt: Date.now(), playing: false }),
   autoNext: () => set({ page: get().page >= MAG_LAST ? 0 : get().page + 1 }),
   toggleMuted: () => {
     const muted = !get().muted;

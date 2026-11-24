@@ -38,10 +38,12 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 
 - Todo texto é HTML de verdade: legível no celular, indexável e acessível.
 - Um canvas WebGL fixo no layout (`src/three/SharedCanvas.tsx`) desenha a revista com o `<View>` do drei e continua vivo ao trocar de aba.
-- A revista abre 5 s depois de aparecer e vira uma página a cada 10 s; clique, setas, teclas 0–4 ou deslizar no celular reiniciam a contagem. `M` liga e desliga o som. `?p=2` abre direto numa página.
-- O som de virar página é sintetizado com Web Audio (sem arquivo) e respeita o botão de mudo, salvo no navegador.
+- A revista abre 5 s depois de aparecer e vira uma página a cada 10 s até a pessoa assumir (clique, setas, teclas 0–4, deslizar no celular) ou apertar "Pausar virada automática". `M` liga e desliga o som. `?p=2` abre direto numa página. No celular aparece uma página por vez.
+- As páginas da revista são visuais (número de destaque e o caminho do produto); o texto e os botões ficam só no painel em HTML.
+- O som de virar página é montado em Web Audio a partir das três fases de uma virada real (levantar, ar passando, assentar), com 5 variações sorteadas e passagem da direita para a esquerda no estéreo. Respeita o botão de mudo, salvo no navegador.
 - Os vídeos de fundo foram gerados no Gemini e convertidos em loop sem emenda (`ffmpeg`, sem áudio, ~300 KB cada). Páginas sem vídeo usam a foto com um movimento lento de câmera.
-- `/contato?assunto=credencial` já abre o formulário e o WhatsApp com o assunto escolhido.
+- `/contato?assunto=credencial` já abre o formulário e o WhatsApp com o assunto escolhido; o resumo também pode ser copiado para quem não usa WhatsApp Web.
+- SEO: `sitemap.xml`, `robots.txt`, imagem de compartilhamento (`src/app/opengraph-image.png`) e JSON-LD da empresa e dos três produtos (`src/app/layout.tsx`).
 - Se o FPS cair, o `PerformanceMonitor` reduz a resolução do canvas.
 
 ## Paleta

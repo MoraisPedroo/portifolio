@@ -54,6 +54,8 @@ function Arrow({ dir, onClick, label }: { dir: "prev" | "next"; onClick: () => v
 export function ProjectsStage() {
   const page = useMagazine((s) => s.page);
   const touchedAt = useMagazine((s) => s.touchedAt);
+  const playing = useMagazine((s) => s.playing);
+  const muted = useMagazine((s) => s.muted);
   const [demo, setDemo] = useState<ProductId | null>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   const state = magazineStates[page];
@@ -72,13 +74,15 @@ export function ProjectsStage() {
     window.history.replaceState(window.history.state, "", url);
   }, [page]);
 
-  // Virada automática; reinicia a cada interação e pausa com a demonstração aberta.
+  // Virada automática: abre em 5 s e vira a cada 10 s até a pessoa assumir o controle
+  // (clique, seta, deslizar) ou apertar pausa. Para também com a demonstração aberta.
   const wait = page === 0 ? OPEN_MS : TURN_MS;
+  const running = playing && !demo;
   useEffect(() => {
-    if (demo) return;
+    if (!running) return;
     const timer = setTimeout(() => useMagazine.getState().autoNext(), wait);
     return () => clearTimeout(timer);
-  }, [page, touchedAt, demo, wait]);
+  }, [page, touchedAt, running, wait]);
 
   // Teclado: setas, Home, 0–4 e M para o som.
   useEffect(() => {
@@ -148,7 +152,7 @@ export function ProjectsStage() {
                     >
                       <span className={`size-1.5 rounded-full ${DOT[item.background]}`} aria-hidden />
                       <span className={active ? "" : "max-md:sr-only"}>{item.label}</span>
-                      {active && !demo && <TimerBar key={`${page}-${touchedAt}`} duration={wait} />}
+                      {active && running && <TimerBar key={`${page}-${touchedAt}`} duration={wait} />}
                     </button>
                   </li>
                 );
@@ -156,9 +160,32 @@ export function ProjectsStage() {
             </ol>
             <Arrow dir="next" label="Próxima página" onClick={() => useMagazine.getState().next()} />
           </nav>
-          <p className="mt-2 hidden text-center text-[13px] text-fog/80 lg:block short:hidden">
-            Clique na folha ou use ← → para virar. Tecla M liga e desliga o som.
-          </p>
+          <div className="relative z-30 mt-2 flex flex-wrap items-center justify-center gap-2 text-[13px]">
+            <button
+              type="button"
+              onClick={() => useMagazine.getState().togglePlaying()}
+              aria-pressed={playing}
+              className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/20 bg-ink/70 px-3 font-medium text-white backdrop-blur transition-colors hover:border-white/50"
+            >
+              <svg viewBox="0 0 16 16" className="size-3.5" fill="currentColor" aria-hidden>
+                {playing ? <path d="M4 3h3v10H4zM9 3h3v10H9z" /> : <path d="M4 2.5v11l9-5.5z" />}
+              </svg>
+              {playing ? "Pausar virada automática" : "Virar sozinha"}
+            </button>
+            <button
+              type="button"
+              onClick={() => useMagazine.getState().toggleMuted()}
+              aria-pressed={!muted}
+              className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/20 bg-ink/70 px-3 font-medium text-white backdrop-blur transition-colors hover:border-white/50"
+            >
+              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+                {muted ? <path d="m22 9-6 6m0-6 6 6" /> : <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" />}
+              </svg>
+              Som: {muted ? "mudo" : "ligado"} <kbd className="font-mono text-fog">(M)</kbd>
+            </button>
+            <span className="hidden text-fog/80 xl:inline short:hidden">Clique na folha ou use ← →</span>
+          </div>
         </div>
 
         <aside className="relative z-30 lg:max-h-full lg:overflow-y-auto">
