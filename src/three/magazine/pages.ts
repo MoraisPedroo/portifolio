@@ -64,7 +64,7 @@ const paintCover: Painter = (g) => {
   g.text("DP SYSTEMS", 34, 34, { size, weight: 850, color: "#FFFFFF", stretch: "expanded", tracking: -4 });
   g.rect(36, 40 + size, PW - 72, 3, "#E8C38A");
   g.text(ISSUE, 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0" });
-  g.text("Pinheiros, São Paulo", PW - 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0", align: "right" });
+  g.text("dpsystemsbrasil.com.br", PW - 36, 56 + size, { size: 20, weight: 600, color: "#E6EAF0", align: "right" });
 
   g.text("Portfólio de engenharia e produtos", 40, 430, {
     font: "editorial",
@@ -194,8 +194,7 @@ const paintBack: Painter = (g) => {
   g.text("Engenharia de software sob medida", 48, 220, { font: "editorial", size: 34, weight: 500, color: "#E6EAF0", maxWidth: 480, lineHeight: 40 });
   g.rect(48, 330, 64, 4, "#E8C38A");
   g.text(ISSUE, 48, 356, { size: 20, weight: 600, color: FOG });
-  g.text(company.location, 48, 386, { size: 20, weight: 600, color: FOG });
-  g.text("dpsystemsbrasil.com.br", 48, 416, { font: "mono", size: 18, weight: 500, color: "#E8C38A" });
+  g.text("dpsystemsbrasil.com.br", 48, 390, { font: "mono", size: 18, weight: 500, color: "#E8C38A" });
   g.text(company.legalName, 48, PH - 84, { font: "mono", size: 14, weight: 500, color: FOG });
   g.text(`CNPJ ${company.cnpj}`, 48, PH - 60, { font: "mono", size: 16, weight: 500, color: FOG });
   g.rr(PW - 150, PH - 96, 112, 70, 6, "#FFFFFF", null);

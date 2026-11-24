@@ -2,9 +2,9 @@
 
 Site da DP Systems em três abas:
 
-- **Apresentação** (`/`): manifesto, como a engenharia sob medida aparece nos produtos e o índice da revista.
+- **Apresentação** (`/`): uma tela só, com o título, a prova (7.000+ laboratórios) e atalhos para os três produtos.
 - **Projetos** (`/projetos`): revista 3D com capa, DP Printer, EstoqueNTO, Credencial Studio e contracapa. O fundo (vídeo, cor e tipografia) e o painel ao lado mudam junto com a página. Cada produto tem uma demonstração interativa.
-- **Contato** (`/contato`): WhatsApp com mensagem pronta, formulário de quatro campos, sócios e dados da empresa.
+- **Contato** (`/contato`): uma tela só, com WhatsApp, LinkedIn da empresa e dos sócios, CNPJ e o formulário que monta a mensagem.
 
 Os textos dos produtos vêm do funcionamento real de cada aplicativo (repositórios do DP Printer, EstoqueNTO e Credencial Studio).
 
@@ -22,7 +22,7 @@ Abra http://localhost:3000. Para conferir o build de produção: `npm run build`
 | O quê | Arquivo |
 | --- | --- |
 | Textos, links, contatos, produtos e dados das demos | `src/content/site.ts` |
-| E-mail oficial e LinkedIn dos sócios | `company.email` e `company.partners[].linkedin` em `src/content/site.ts` (vazios ficam ocultos) |
+| E-mail oficial e LinkedIn da empresa e dos sócios | `company.email`, `company.linkedin` e `company.partners[].linkedin` em `src/content/site.ts` (e-mail vazio fica oculto) |
 | Cores e tipografia | `src/app/globals.css` (bloco `@theme`) e `src/lib/fonts.ts` |
 | Aba Projetos (revista, paginação, virada automática, teclado) | `src/components/projects/ProjectsStage.tsx` |
 | Painel ao lado da revista | `src/components/projects/ProjectHUD.tsx` |

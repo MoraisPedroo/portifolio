@@ -17,9 +17,10 @@ export const company = {
   name: "DP Systems",
   legalName: "PEDRO HENRIQUE MORAIS DE ASSIS & CIA LTDA",
   cnpj: "65.147.732/0001-54",
-  location: "Pinheiros, São Paulo - SP",
   founded: "2026",
-  kicker: "Engenharia sob medida · Pinheiros, São Paulo",
+  kicker: "Engenharia de software on-demand",
+  tagline: "Engenharia de software on-demand. Middleware e telemetria para impressão térmica, integrações e sistemas internos.",
+  linkedin: "https://www.linkedin.com/company/dpsystemsbrasil/",
   manifesto: "Software sob medida para o que trava sua operação.",
   lead:
     "Construímos o elo entre o seu sistema e o chão da operação: impressão direta do navegador na térmica, controle de estoque com integrações reais e migração segura de bases antigas.",
@@ -35,24 +36,17 @@ export const company = {
       fullName: "Pedro H. Morais",
       role: "Sócio, engenharia de software",
       focus: "Middleware de impressão, integrações e sistemas internos",
-      linkedin: null,
+      linkedin: "https://www.linkedin.com/in/pedro-assis-184121239/",
     },
     {
       name: "Diego",
       fullName: "Diego H. Pereira",
       role: "Sócio, engenharia de software",
       focus: "Automação de operação, APIs e entrega dos produtos",
-      linkedin: null,
+      linkedin: "https://www.linkedin.com/in/diegohps19/",
     },
   ] satisfies Partner[],
 };
-
-/** Como uma conversa vira projeto. */
-export const steps = [
-  { title: "Conversa técnica direta", text: "Você explica o gargalo para o Pedro e o Diego, sem intermediário comercial." },
-  { title: "Escopo e prazo claros", text: "Devolvemos o desenho da solução, as integrações envolvidas e um cronograma objetivo." },
-  { title: "Deploy acompanhado", text: "Entregamos em produção junto com a equipe que vai operar no dia a dia." },
-];
 
 export type Subject = "sob-medida" | "dpprinter" | "estoquento" | "credencial" | "outro";
 
@@ -73,30 +67,6 @@ export const nav = [
   { href: "/projetos", label: "Projetos" },
   { href: "/contato", label: "Contato" },
 ] as const;
-
-/** Como a engenharia sob medida aparece em cada produto real. */
-export const practices = [
-  {
-    title: "Hardware falando com o navegador",
-    text: "Seu sistema web imprime direto na Zebra por USB Raw, TCP/IP ou driver, sem instalar o Zebra Browser Print em cada estação.",
-    shift: "Antes: driver travando no balcão. Depois: etiqueta saindo do navegador.",
-  },
-  {
-    title: "Integrações que eliminam redigitação",
-    text: "Correios ViPP, rastreio, DocuSign, WhatsApp oficial via Twilio, consulta de CNPJ e CEP e Microsoft 365 no mesmo fluxo.",
-    shift: "Antes: cinco sistemas abertos. Depois: um painel.",
-  },
-  {
-    title: "Saída de sistemas antigos",
-    text: "Bases em Access e planilhas viram aplicativos em rede, com validação dos dados e controle de revisão.",
-    shift: "Antes: um computador com o arquivo. Depois: a equipe inteira na mesma base.",
-  },
-  {
-    title: "Operação rastreável ponta a ponta",
-    text: "Cada etiqueta gera registro de laboratório, serial, estação e usuário. Cada equipamento tem histórico do recebimento ao envio.",
-    shift: "Antes: quem imprimiu? Depois: está no inventário.",
-  },
-];
 
 export type Product = {
   id: "dpprinter" | "estoquento" | "credencial";
